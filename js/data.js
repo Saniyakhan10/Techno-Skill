@@ -20,7 +20,34 @@ const courses = [{
     assignments: 15,
     resources: 28,
     lastUpdated: "2023-10-15",
-    icon: "fa-code"
+    icon: "fa-code",
+    modules: [
+        {
+            title: "Module 1: HTML5 Fundamentals",
+            duration: "2:15:00",
+            videoUrl: "https://www.youtube.com/embed/qz0aGYrrlhU" // HTML Tutorial
+        },
+        {
+            title: "Module 2: CSS3 Styling & Flexbox",
+            duration: "3:45:00",
+            videoUrl: "https://www.youtube.com/embed/1Rs2ND1ryYc" // CSS Tutorial
+        },
+        {
+            title: "Module 3: JavaScript Basics",
+            duration: "4:30:00",
+            videoUrl: "https://www.youtube.com/embed/W6NZfCO5SIk" // JS Tutorial
+        },
+        {
+            title: "Module 4: React.js Essentials",
+            duration: "5:15:00",
+            videoUrl: "https://www.youtube.com/embed/bMknfKXIFA8" // React Tutorial
+        },
+        {
+            title: "Module 5: Node.js Backend",
+            duration: "4:00:00",
+            videoUrl: "https://www.youtube.com/embed/Oe421EPjeBE" // Node.js
+        }
+    ]
 },
 {
     id: 2,
@@ -701,9 +728,9 @@ function createCourseCard(course, options = {}) {
     const isWishlisted = isInWishlist(course.id);
     const iconClass = course.icon ? `fas ${course.icon}` : 'fas fa-graduation-cap';
 
-    // Create shorter description for cards (first 140 characters)
-    const shortDesc = course.description.length > 140
-        ? course.description.substring(0, 140) + '...'
+    // Create shorter description for cards (first 30 characters)
+    const shortDesc = course.description.length > 30
+        ? course.description.substring(0, 30) + '... <span style="color: var(--primary); cursor: pointer; font-weight: 600;" onclick="event.stopPropagation(); showCoursePreview(' + course.id + ')">Read More</span>'
         : course.description;
 
     return `
@@ -771,21 +798,21 @@ function createCourseCard(course, options = {}) {
                 
                 <!-- Course Stats -->
                 <div class="course-stats">
-                    <div class="stat-item">
+                    <div class="stat-item" title="Duration">
                         <i class="fas fa-clock"></i>
                         <span>${course.duration}</span>
                     </div>
-                    <div class="stat-item">
+                    <div class="stat-item" title="Students">
                         <i class="fas fa-users"></i>
-                        <span>${course.students.toLocaleString()} students</span>
+                        <span>${course.students >= 1000 ? (course.students / 1000).toFixed(1) + 'k' : course.students}</span>
                     </div>
-                    <div class="stat-item">
+                    <div class="stat-item" title="Lectures">
                         <i class="fas fa-play-circle"></i>
-                        <span>${course.lectures || 'N/A'} lectures</span>
+                        <span>${course.lectures || 'N/A'} Ls</span>
                     </div>
-                    <div class="stat-item">
+                    <div class="stat-item" title="Certificate">
                         <i class="fas fa-certificate"></i>
-                        <span>${course.certificate ? 'Certificate' : 'No Certificate'}</span>
+                        <span>${course.certificate ? 'Cert.' : 'No'}</span>
                     </div>
                 </div>
                 

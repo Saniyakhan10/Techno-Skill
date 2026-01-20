@@ -197,7 +197,6 @@ function clearComparison() {
 }
 
 // Buy course function
-// Buy course function
 function buyCourse(courseId) {
     // Check if user is logged in
     const currentUser = localStorage.getItem('currentUser');
@@ -350,3 +349,100 @@ function formatDate(dateString) {
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+// Resource Data with Real PDF Links
+const resourceData = {
+    dsa: {
+        title: "DSA Handwritten Notes",
+        icon: "fas fa-cubes",
+        // DSA Tutorial PDF
+        pdfUrl: "https://www.tutorialspoint.com/data_structures_algorithms/data_structures_algorithms_tutorial.pdf"
+    },
+    java: {
+        title: "Java Masterclass Notes",
+        icon: "fab fa-java",
+        // Java Tutorial PDF
+        pdfUrl: "https://www.tutorialspoint.com/java/java_tutorial.pdf"
+    },
+    python: {
+        title: "Python Zero to Hero",
+        icon: "fab fa-python",
+        // Python Tutorial PDF
+        pdfUrl: "https://www.tutorialspoint.com/python/python_tutorial.pdf"
+    },
+    webdev: {
+        title: "Full Stack Web Dev Guide",
+        icon: "fas fa-laptop-code",
+        // HTML Tutorial PDF (as proxy for WebDev)
+        pdfUrl: "https://www.tutorialspoint.com/html/html_tutorial.pdf"
+    }
+};
+
+function openResourcePreview(type) {
+    const data = resourceData[type];
+    if (!data) return;
+
+    // Create modal if it doesn't exist
+    if (!document.getElementById('resource-modal')) {
+        const modalHtml = `
+            <div id="resource-modal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+                <div class="modal-content" style="background: white; width: 95%; max-width: 900px; height: 90vh; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; animation: slideIn 0.3s ease; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+                    
+                    <!-- Header -->
+                    <div style="padding: 15px 25px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; background: #fff;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 35px; height: 35px; background: #f0fdf4; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #16a34a; font-size: 1.1rem;">
+                                <i id="res-icon"></i>
+                            </div>
+                            <h3 id="res-title" style="margin: 0; font-size: 1.1rem; color: #1e293b; font-weight: 600;"></h3>
+                        </div>
+                        <button onclick="closeResourceModal()" style="border: none; background: none; font-size: 1.5rem; cursor: pointer; color: #64748b; padding: 5px; line-height: 1;">&times;</button>
+                    </div>
+
+                    <!-- PDF Viewer (Iframe) -->
+                    <div style="flex: 1; background: #f1f5f9; position: relative; overflow: hidden;">
+                         <iframe id="res-frame" src="" style="width: 100%; height: 100%; border: none;"></iframe>
+                    </div>
+
+                    <!-- Footer -->
+                    <div style="padding: 15px 25px; border-top: 1px solid #e2e8f0; background: #fff; display: flex; justify-content: center; align-items: center;">
+                        <a id="res-download-link" href="#" target="_blank" class="btn btn-primary" style="padding: 10px 40px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-size: 1.1rem;">
+                            <i class="fas fa-download"></i> Download PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <style>
+                @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+            </style>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+
+    // Populate Modal
+    const modal = document.getElementById('resource-modal');
+    document.getElementById('res-title').innerText = data.title;
+    document.getElementById('res-icon').className = data.icon;
+
+    // Set PDF URL
+    const frame = document.getElementById('res-frame');
+    frame.src = data.pdfUrl;
+
+    // Set Download Link
+    const downloadLink = document.getElementById('res-download-link');
+    downloadLink.href = data.pdfUrl; // Direct link to PDF
+
+    // Show Modal
+    modal.style.display = 'flex';
+}
+
+function closeResourceModal() {
+    const modal = document.getElementById('resource-modal');
+    if (modal) {
+        modal.style.display = 'none';
+        // Clear src to stop playing/loading
+        const frame = document.getElementById('res-frame');
+        if (frame) frame.src = '';
+    }
+}
+

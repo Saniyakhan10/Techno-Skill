@@ -310,12 +310,92 @@ function updateProgress(courseId) {
     }
 }
 
+// Player State
+let playerState = {
+    course: null,
+    currentModuleIndex: 0
+};
+
 function continueLearning(courseId) {
     const course = getCourseById(courseId);
-    if (course) {
-        showNotification(`Continuing "${course.title}" - Opening course player...`, 'info');
-        updateCourseProgress(courseId, getPurchasedCourses().find(item => item.id === courseId)?.progress || 0);
+    if (!course) return;
+
+    playerState.course = course;
+    playerState.currentModuleIndex = 0;
+
+    // Check if course has modules, if not create dummy ones for demo
+    if (!course.modules || course.modules.length === 0) {
+        course.modules = [
+            { title: "Module 1: Introduction", duration: "10:00", videoUrl: "https://www.youtube.com/embed/EngW7tLk6R8" },
+            { title: "Module 2: Getting Started", duration: "15:00", videoUrl: "https://www.youtube.com/embed/zJSY8tbf_ys" },
+            { title: "Module 3: Core Concepts", duration: "20:00", videoUrl: "https://www.youtube.com/embed/kUMe1FH4CHE" }
+        ];
     }
+
+    openPlayerModal();
+}
+
+function openPlayerModal() {
+    const modal = document.getElementById('course-player-modal');
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    document.getElementById('player-course-title').textContent = playerState.course.title;
+
+    renderPlayerModules();
+    loadModule(0);
+}
+
+function closePlayerModal() {
+    const modal = document.getElementById('course-player-modal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+
+    // Stop video
+    document.getElementById('player-video-frame').src = '';
+}
+
+function renderPlayerModules() {
+    const list = document.getElementById('player-modules-list');
+    list.innerHTML = playerState.course.modules.map((mod, index) => `
+        <div class="module-item ${index === playerState.currentModuleIndex ? 'active' : ''}" 
+             onclick="loadModule(${index})">
+            <div class="module-main">
+                <span class="module-title">${mod.title}</span>
+                <span class="module-duration"><i class="fas fa-clock"></i> ${mod.duration}</span>
+            </div>
+            ${index === playerState.currentModuleIndex ? '<i class="fas fa-play-circle"></i>' : '<i class="far fa-circle-play"></i>'}
+        </div>
+    `).join('');
+}
+
+function loadModule(index) {
+    if (index < 0 || index >= playerState.course.modules.length) return;
+
+    playerState.currentModuleIndex = index;
+    const module = playerState.course.modules[index];
+
+    // Update Video
+    document.getElementById('player-video-frame').src = module.videoUrl;
+    document.getElementById('player-video-title').textContent = module.title;
+
+    // Update active state in list
+    renderPlayerModules();
+
+    // Update Buttons
+    const prevBtn = document.getElementById('prev-module-btn');
+    const nextBtn = document.getElementById('next-module-btn');
+
+    prevBtn.disabled = index === 0;
+    nextBtn.disabled = index === playerState.course.modules.length - 1;
+
+    // Direct assignment to avoid event listener buildup
+    prevBtn.onclick = () => loadModule(index - 1);
+    nextBtn.onclick = () => loadModule(index + 1);
+
+    // Save progress update (simulate)
+    const newProgress = Math.min(100, Math.round(((index + 1) / playerState.course.modules.length) * 100));
+    // updateCourseProgress(playerState.course.id, newProgress); // Optional: auto update progress
 }
 
 function viewCertificate(courseId) {
@@ -584,11 +664,12 @@ function showTestResults(score) {
     const testView = document.getElementById('test-view');
     const total = currentTest.questions.length;
     const percentage = (score / total) * 100;
+    const isPass = percentage >= 50;
 
     testView.innerHTML = `
         <div class="test-active-container">
             <div class="test-results">
-                <h2>Test Completed!</h2>
+                <h2 style="${isPass ? 'color: #10b981;' : ''}">${isPass ? 'Congrats! You Passed!' : 'Test Completed!'}</h2>
                 <div class="score-circle">
                     <span class="score-num">${score}/${total}</span>
                     <span style="font-size: 0.8rem;">Score</span>
@@ -625,6 +706,49 @@ function showTestResults(score) {
             achElem.textContent = (currentPoints + 50).toLocaleString();
         }
     }
+
+    // Celebration Animation if Passed
+    if (isPass) {
+        const duration = 5 * 1000;
+        const animationEnd = Date.now() + duration;
+        const defaults = { startVelocity: 45, spread: 360, ticks: 100, zIndex: 10001 };
+
+        function randomInRange(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        const interval = setInterval(function () {
+            const timeLeft = animationEnd - Date.now();
+
+            if (timeLeft <= 0) {
+                return clearInterval(interval);
+            }
+
+            const particleCount = 60 * (timeLeft / duration);
+
+            // Side bursts
+            confetti(Object.assign({}, defaults, {
+                particleCount,
+                origin: { x: randomInRange(0, 0.2), y: Math.random() - 0.2 },
+                colors: ['#667eea', '#764ba2', '#FFD700']
+            }));
+            confetti(Object.assign({}, defaults, {
+                particleCount,
+                origin: { x: randomInRange(0.8, 1), y: Math.random() - 0.2 },
+                colors: ['#667eea', '#764ba2', '#FFD700']
+            }));
+
+            // Center burst
+            if (timeLeft > duration * 0.8) {
+                confetti(Object.assign({}, defaults, {
+                    particleCount: 100,
+                    origin: { x: 0.5, y: 0.5 },
+                    scalar: 2,
+                    shapes: ['circle', 'square']
+                }));
+            }
+        }, 300);
+    }
 }
 
 function resetTestView() {
@@ -653,4 +777,679 @@ function resetTestView() {
             </div>
         </div>
     `;
+}
+
+// Dummy Certificate Functions (New)
+function downloadDummyCertificate() {
+    const btn = event.currentTarget;
+    const originalText = btn.innerHTML;
+
+    // 1. Show Loading State
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
+    btn.disabled = true;
+
+    // 2. Prepare Data
+    const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Student Name' };
+    const userName = currentUser.name;
+    const courseTitle = "Certified Web Developer";
+    const courseDuration = "45 Hours";
+    const courseLevel = "Advanced";
+    const completionDate = "Jan 15, 2024";
+
+    // 3. Create Temporary Element for PDF Generation
+    // Must be appended to body for html2pdf to render it correctly
+    const wrapper = document.createElement('div');
+    wrapper.id = 'pdf-gen-wrapper';
+    wrapper.style.position = 'fixed';
+    wrapper.style.left = '-9999px'; // Move off-screen
+    wrapper.style.top = '0';
+    wrapper.style.width = '1120px';
+    wrapper.style.zIndex = '-1';
+
+    // Inject Styles & Content (Matched to View Certificate but optimized for print)
+    // Removed external texture to avoid CORS/Network issues
+    wrapper.innerHTML = `
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Great+Vibes&family=Montserrat:wght@300;400;600&display=swap');
+            
+            .pdf-cert-wrapper {
+                font-family: 'Montserrat', sans-serif;
+                position: relative;
+                color: #333;
+            }
+
+            .certificate {
+                background: white;
+                width: 100%;
+                padding: 40px;
+                position: relative;
+                border: 15px solid #fff;
+                outline: 5px solid #8c52ff;
+                background: #fff;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                box-sizing: border-box;
+            }
+            
+            /* Corners */
+            .corner { position: absolute; width: 100px; height: 100px; border: 3px solid #8c52ff; z-index: 10; }
+            .top-left { top: 20px; left: 20px; border-right: none; border-bottom: none; }
+            .top-right { top: 20px; right: 20px; border-left: none; border-bottom: none; }
+            .bottom-left { bottom: 20px; left: 20px; border-right: none; border-top: none; }
+            .bottom-right { bottom: 20px; right: 20px; border-left: none; border-top: none; }
+            
+            /* Seal */
+            .seal {
+                position: absolute; bottom: 50px; right: 50px; width: 130px; height: 130px;
+                background: #ffd700; border-radius: 50%; border: 4px dashed #b8860b;
+                display: flex; align-items: center; justify-content: center;
+                z-index: 20; color: white;
+            }
+            .seal-inner {
+                text-align: center; color: #fff; font-weight: bold; text-transform: uppercase;
+                display: flex; flex-direction: column; align-items: center; justify-content: center;
+                width: 80%; height: 80%; border: 2px solid white; border-radius: 50%;
+            }
+
+            .header-logo {
+                font-family: 'Cinzel', serif; font-size: 2rem; color: #333; font-weight: 700;
+                margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 10px;
+            }
+            
+            .cert-title {
+                font-family: 'Cinzel', serif; font-size: 3rem; color: #8c52ff; margin: 0;
+                letter-spacing: 4px; text-transform: uppercase; border-bottom: 3px double #e5e7eb;
+                padding-bottom: 10px; display: inline-block; width: 85%;
+            }
+            
+            .student-name {
+                font-family: 'Great Vibes', cursive; font-size: 4.5rem; color: #1a1a2e; margin: 20px 0;
+                padding: 0 20px;
+            }
+            
+            .course-name {
+                font-family: 'Montserrat', sans-serif; font-size: 2rem; font-weight: 700; color: #333;
+                margin: 10px 0 30px 0; text-transform: uppercase; letter-spacing: 1px;
+            }
+
+            .details-grid {
+                display: flex; justify-content: center; gap: 40px; margin: 30px 0; width: 100%;
+            }
+            .detail-box {
+                text-align: center; background: #f8f9fe; padding: 10px 20px; border-radius: 8px;
+                border-bottom: 3px solid #8c52ff; min-width: 140px;
+            }
+            .detail-label { font-size: 0.8rem; color: #888; text-transform: uppercase; margin-bottom: 5px; }
+            .detail-value { font-size: 1.1rem; font-weight: 700; color: #1a1a2e; }
+
+            .footer {
+                width: 85%; display: flex; justify-content: space-between; align-items: flex-end; margin-top: 40px;
+            }
+            .signature-img {
+                font-family: 'Great Vibes', cursive; font-size: 2.2rem; color: #1a1a2e;
+                border-bottom: 2px solid #ccc; padding: 0 30px 5px 30px; margin-bottom: 5px;
+            }
+            .signature-title { font-size: 0.8rem; color: #666; text-transform: uppercase; font-weight: 600; }
+        </style>
+        
+        <div class="pdf-cert-wrapper">
+            <div class="certificate">
+                <!-- Corners -->
+                <div class="corner top-left"></div>
+                <div class="corner top-right"></div>
+                <div class="corner bottom-left"></div>
+                <div class="corner bottom-right"></div>
+                
+                <!-- Seal -->
+                <div class="seal">
+                    <div class="seal-inner">
+                        <i class="fas fa-medal" style="font-size: 2rem; margin-bottom: 2px;"></i>
+                        <span style="font-size: 0.7rem;">Verified<br>Excellence</span>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="header-logo">
+                    <i class="fas fa-graduation-cap" style="color: #8c52ff; font-size: 2rem;"></i>
+                    Techno<span style="color: #8c52ff;">Skill</span>
+                </div>
+
+                <h1 class="cert-title">Certificate of Completion</h1>
+                <p style="text-transform: uppercase; letter-spacing: 2px; margin-top: 20px; color: #666;">This is to certify that</p>
+                
+                <div class="student-name">${userName}</div>
+                
+                <p style="font-size: 1.1rem; color: #555;">has successfully completed the comprehensive training course</p>
+                
+                <div class="course-name">${courseTitle}</div>
+
+                <div class="details-grid">
+                    <div class="detail-box">
+                        <div class="detail-label">Duration</div>
+                        <div class="detail-value">${courseDuration}</div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="detail-label">Competency</div>
+                        <div class="detail-value">${courseLevel}</div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="detail-label">Date</div>
+                        <div class="detail-value">${completionDate}</div>
+                    </div>
+                </div>
+
+                <div class="footer">
+                    <div class="signature-block">
+                        <div class="signature-img">Sanket Rahangdale</div>
+                        <div class="signature-title">Lead Instructor</div>
+                    </div>
+                    <div class="signature-block">
+                        <div class="signature-img">Techno Skill Team</div>
+                        <div class="signature-title">Program Director</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px; font-size: 0.7rem; color: #999;">
+                    Certificate ID: TS-${Date.now().toString(36).toUpperCase()} • Verify at technoskill.com
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(wrapper);
+
+    // 4. Generate PDF
+    const opt = {
+        margin: 0.2,
+        filename: `Certificate_${userName.replace(/\s+/g, '_')}_TechnoSkill.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: {
+            scale: 2,
+            useCORS: true,
+            logging: false
+        },
+        jsPDF: { unit: 'in', format: 'landscape', orientation: 'landscape' }
+    };
+
+    // Use html2pdf library
+    if (typeof html2pdf !== 'undefined') {
+        html2pdf().set(opt).from(wrapper).save().then(() => {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            document.body.removeChild(wrapper); // Cleanup
+            showNotification('Certificate downloaded successfully!', 'success');
+
+            if (confirm("Download started. Would you like to view the certificate in browser as well?")) {
+                viewDummyCertificate();
+            }
+        }).catch(err => {
+            console.error('PDF Generation Error:', err);
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            if (document.body.contains(wrapper)) document.body.removeChild(wrapper);
+            alert('Download failed. Use the "View" button to view and print the certificate instead.');
+        });
+    } else {
+        console.error('html2pdf library not loaded');
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        if (document.body.contains(wrapper)) document.body.removeChild(wrapper);
+        alert('PDF functionality not loaded. Please refresh the page.');
+    }
+}
+
+function viewDummyCertificate() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Student Name' };
+    const userName = currentUser.name;
+    const courseTitle = "Certified Web Developer";
+    const courseDuration = "45 Hours";
+    const courseLevel = "Advanced";
+    const completionDate = "Jan 15, 2024";
+
+    const certificateWindow = window.open('', '_blank');
+    certificateWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Certificate of Completion - ${courseTitle}</title>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+            <style>
+                @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Great+Vibes&family=Montserrat:wght@300;400;600&display=swap');
+                
+                body {
+                    font-family: 'Montserrat', sans-serif;
+                    margin: 0;
+                    padding: 20px;
+                    background: #1a1a2e;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    min-height: 100vh;
+                }
+                
+                /* Close Button Styling */
+                .actions {
+                    position: fixed;
+                    top: 20px;
+                    right: 30px;
+                    z-index: 1000;
+                    display: flex;
+                    gap: 15px;
+                }
+                
+                .btn {
+                    padding: 10px 25px;
+                    border: none;
+                    border-radius: 50px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-size: 0.9rem;
+                    text-decoration: none;
+                }
+                
+                .btn-close {
+                    background: #ef4444;
+                    color: white;
+                }
+                
+                .btn-close:hover {
+                    background: #dc2626;
+                    transform: translateY(-2px);
+                }
+                
+                .btn-print {
+                    background: #8c52ff;
+                    color: white;
+                }
+                
+                .btn-print:hover {
+                    background: #7c3aed;
+                    transform: translateY(-2px);
+                }
+
+                .certificate-container {
+                    position: relative;
+                    margin-top: 60px; /* Space for buttons */
+                    margin-bottom: 40px;
+                    width: 100%;
+                    display: flex;
+                    justify-content: center;
+                }
+
+                .certificate {
+                    background: white;
+                    width: 100%;
+                    max-width: 1100px;
+                    min-height: 750px;
+                    padding: 50px;
+                    position: relative;
+                    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+                    border: 15px solid #fff;
+                    outline: 5px solid #8c52ff;
+                    background: #fff url('https://www.transparenttextures.com/patterns/cream-paper.png');
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    text-align: center;
+                    box-sizing: border-box;
+                }
+                
+                /* Decorative Corners */
+                .corner {
+                    position: absolute;
+                    width: 100px;
+                    height: 100px;
+                    border: 3px solid #8c52ff;
+                    z-index: 10;
+                }
+                
+                @media (min-width: 768px) {
+                    .corner { width: 150px; height: 150px; }
+                }
+                
+                .top-left { top: 20px; left: 20px; border-right: none; border-bottom: none; }
+                .top-right { top: 20px; right: 20px; border-left: none; border-bottom: none; }
+                .bottom-left { bottom: 20px; left: 20px; border-right: none; border-top: none; }
+                .bottom-right { bottom: 20px; right: 20px; border-left: none; border-top: none; }
+                
+                /* Gold Seal */
+                .seal {
+                    position: absolute;
+                    bottom: 60px;
+                    right: 60px;
+                    width: 120px;
+                    height: 120px;
+                    background: linear-gradient(135deg, #ffd700, #ffaa00);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+                    border: 4px dashed #b8860b;
+                    transform: rotate(-15deg);
+                }
+
+                @media (min-width: 768px) {
+                    .seal { width: 140px; height: 140px; right: 80px; }
+                }
+                
+                .seal-inner {
+                    width: 80%;
+                    height: 80%;
+                    border: 2px solid #b8860b;
+                    border-radius: 50%;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    color: #fff;
+                    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+                }
+                
+                .seal i { font-size: 2.5rem; color: #fff; margin-bottom: 2px; }
+                .seal span { font-size: 0.7rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: #fff; }
+                
+                @media (min-width: 768px) {
+                    .seal i { font-size: 3rem; margin-bottom: 5px; }
+                    .seal span { font-size: 0.8rem; }
+                }
+
+                .watermark {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    font-size: 20vw;
+                    color: rgba(140, 82, 255, 0.03);
+                    font-family: 'Cinzel', serif;
+                    pointer-events: none;
+                    z-index: 1;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+                .watermark i { font-size: 15vw; }
+
+                .header { margin-bottom: 20px; z-index: 20; width: 100%; }
+                .header-logo {
+                    font-family: 'Cinzel', serif;
+                    font-size: 2rem;
+                    color: #333;
+                    font-weight: 700;
+                    margin-bottom: 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 10px;
+                }
+                @media (min-width: 768px) {
+                    .header-logo { font-size: 2.2rem; margin-bottom: 30px; gap: 15px; }
+                }
+                
+                .header-logo span { color: #8c52ff; }
+                
+                .cert-title {
+                    font-family: 'Cinzel', serif;
+                    font-size: 2rem;
+                    color: #8c52ff;
+                    margin: 0;
+                    letter-spacing: 2px;
+                    text-transform: uppercase;
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+                    border-bottom: 3px double #e5e7eb;
+                    padding-bottom: 10px;
+                    display: inline-block;
+                    width: 90%;
+                    line-height: 1.2;
+                }
+                @media (min-width: 768px) {
+                    .cert-title { font-size: 3.5rem; letter-spacing: 5px; width: 80%; }
+                }
+                
+                .present-text {
+                    font-size: 1rem;
+                    color: #666;
+                    margin-top: 15px;
+                    text-transform: uppercase;
+                    letter-spacing: 2px;
+                }
+                @media (min-width: 768px) {
+                    .present-text { font-size: 1.2rem; margin-top: 20px; }
+                }
+
+                .content { z-index: 20; width: 100%; }
+                
+                .student-name {
+                    font-family: 'Great Vibes', cursive;
+                    font-size: 3rem;
+                    color: #1a1a2e;
+                    margin: 10px 0;
+                    text-shadow: 2px 2px 0px rgba(0,0,0,0.05);
+                    padding: 0 10px;
+                    background: linear-gradient(to right, transparent, rgba(140, 82, 255, 0.05), transparent);
+                    word-break: break-word;
+                }
+                @media (min-width: 768px) {
+                    .student-name { font-size: 5rem; padding: 0 20px; }
+                }
+                
+                .course-intro { font-size: 0.9rem; color: #555; margin-bottom: 5px; }
+                @media (min-width: 768px) {
+                    .course-intro { font-size: 1.1rem; }
+                }
+                
+                .course-name {
+                    font-family: 'Montserrat', sans-serif;
+                    font-size: 1.5rem;
+                    font-weight: 700;
+                    color: #333;
+                    margin: 10px 0 20px 0;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    line-height: 1.3;
+                }
+                @media (min-width: 768px) {
+                    .course-name { font-size: 2.2rem; margin: 10px 0 30px 0; }
+                }
+
+                .details-grid {
+                    display: flex;
+                    justify-content: center;
+                    flex-wrap: wrap;
+                    gap: 20px;
+                    margin: 20px 0 30px 0;
+                    z-index: 20;
+                }
+                @media (min-width: 768px) {
+                    .details-grid { gap: 60px; margin: 30px 0 50px 0; }
+                }
+                
+                .detail-box {
+                    text-align: center;
+                    background: #f8f9fe;
+                    padding: 10px 15px;
+                    border-radius: 8px;
+                    border-bottom: 3px solid #8c52ff;
+                    min-width: 120px;
+                }
+                @media (min-width: 768px) {
+                    .detail-box { padding: 10px 20px; min-width: 150px; }
+                }
+                
+                .detail-label {
+                    font-size: 0.7rem;
+                    color: #888;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    margin-bottom: 5px;
+                }
+                @media (min-width: 768px) {
+                    .detail-label { font-size: 0.8rem; }
+                }
+                
+                .detail-value {
+                    font-size: 1rem;
+                    font-weight: 700;
+                    color: #1a1a2e;
+                }
+                @media (min-width: 768px) {
+                    .detail-value { font-size: 1.2rem; }
+                }
+
+                .footer {
+                    width: 90%;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 30px;
+                    justify-content: space-between;
+                    align-items: center;
+                    z-index: 20;
+                    margin-top: auto;
+                    margin-bottom: 40px;
+                }
+                @media (min-width: 768px) {
+                    .footer { width: 80%; flex-direction: row; align-items: flex-end; }
+                }
+                
+                .signature-block { text-align: center; }
+                .signature-img { 
+                    font-family: 'Great Vibes', cursive; 
+                    font-size: 2rem; 
+                    color: #1a1a2e; 
+                    border-bottom: 2px solid #ccc;
+                    padding: 0 20px 5px 20px;
+                    margin-bottom: 5px;
+                    display: inline-block;
+                    min-width: 150px;
+                }
+                @media (min-width: 768px) {
+                    .signature-img { font-size: 2.5rem; padding: 0 40px 10px 40px; margin-bottom: 10px; min-width: 200px; }
+                }
+                
+                .signature-title { font-size: 0.8rem; color: #666; text-transform: uppercase; font-weight: 600; }
+                @media (min-width: 768px) {
+                    .signature-title { font-size: 0.9rem; }
+                }
+                
+                .cert-meta {
+                    position: absolute;
+                    bottom: 10px;
+                    left: 0;
+                    width: 100%;
+                    text-align: center;
+                    font-size: 0.65rem;
+                    color: #999;
+                    font-family: monospace;
+                    padding: 0 10px;
+                }
+                @media (min-width: 768px) {
+                    .cert-meta { bottom: 15px; font-size: 0.75rem; }
+                }
+
+                @media print {
+                    .actions { display: none; }
+                    body { background: white; padding: 0; }
+                    .certificate-container { margin: 0; }
+                    .certificate { 
+                        box-shadow: none; 
+                        margin: 0; 
+                        border: none; 
+                        width: 100%; 
+                        height: 100vh; 
+                        max-width: none;
+                    }
+                    .seal { bottom: 60px; right: 80px; }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="actions">
+                <button class="btn btn-print" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
+                <button class="btn btn-close" onclick="window.close()"><i class="fas fa-times"></i> Close Window</button>
+            </div>
+            
+            <div class="certificate-container">
+                <div class="certificate">
+                    <!-- Decorative Elements -->
+                    <div class="corner top-left"></div>
+                    <div class="corner top-right"></div>
+                    <div class="corner bottom-left"></div>
+                    <div class="corner bottom-right"></div>
+                    
+                    <div class="watermark"><i class="fas fa-award"></i></div>
+                    
+                    <div class="seal">
+                        <div class="seal-inner">
+                            <i class="fas fa-medal"></i>
+                            <span>Verified</span>
+                            <span>Excellence</span>
+                        </div>
+                    </div>
+
+                    <!-- Header -->
+                    <div class="header">
+                        <div class="header-logo">
+                            <i class="fas fa-graduation-cap" style="color: #8c52ff; font-size: 2.5rem;"></i>
+                            Techno<span>Skill</span>
+                        </div>
+                        <h1 class="cert-title">Certificate of Completion</h1>
+                        <p class="present-text">This is to certify that</p>
+                    </div>
+
+                    <!-- Main Content -->
+                    <div class="content">
+                        <div class="student-name">${userName}</div>
+                        <p class="course-intro">has successfully completed the comprehensive training course</p>
+                        <div class="course-name">${courseTitle}</div>
+                    </div>
+
+                    <!-- Course Meta -->
+                    <div class="details-grid">
+                        <div class="detail-box">
+                            <div class="detail-label">Duration</div>
+                            <div class="detail-value">${courseDuration}</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-label">Competency</div>
+                            <div class="detail-value">${courseLevel}</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-label">Completion Date</div>
+                            <div class="detail-value">${completionDate}</div>
+                        </div>
+                    </div>
+
+                    <!-- Footer Signatures -->
+                    <div class="footer">
+                        <div class="signature-block">
+                            <div class="signature-img">Sanket Rahangdale</div>
+                            <div class="signature-title">Lead Instructor</div>
+                        </div>
+                        <div class="signature-block">
+                            <div class="signature-img">Techno Skill Team</div>
+                            <div class="signature-title">Program Director</div>
+                        </div>
+                    </div>
+
+                    <div class="cert-meta">
+                        Certificate ID: TS-${Date.now().toString(36).toUpperCase()}-WEBDEV • Verify at technoskill.com/verify
+                    </div>
+                </div>
+            </div>
+        </body>
+        </html>
+    `);
+    certificateWindow.document.close();
 }

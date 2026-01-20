@@ -23,14 +23,15 @@
             <ul class="nav-menu">
                 <li><a href="index.html" class="active">Home</a></li>
                 <li><a href="courses.html">Courses</a></li>
-                <li><a href="wishlist.html">Wishlist <span class="badge" id="wishlist-count"></span></a></li>
-                <li><a href="compare.html">Compare <span class="badge" id="compare-count"></span></a></li>
-                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
                 <li><a href="sell.html">Sell Course</a></li>
             </ul>
             <div class="nav-icons">
                 <a href="wishlist.html" class="icon-link"><i class="fas fa-heart"></i></a>
                 <a href="compare.html" class="icon-link"><i class="fas fa-exchange-alt"></i></a>
+                <a href="#" class="icon-link" onclick="openDownloadsModal(); return false;"><i
+                        class="fas fa-download"></i></a>
                 <a href="dashboard.html" class="icon-link"><i class="fas fa-user"></i></a>
             </div>
             <button class="hamburger" id="hamburger">
@@ -50,7 +51,7 @@
                 <h1>Master the Future of <span class="text-primary">Tech & Innovation</span></h1>
                 <p class="hero-subtitle">From Web Development to AI & Machine Learning - Learn from industry experts,
                     build real-world projects, and accelerate your career.</p>
-                <div class="hero-features">
+                <div class="hero-features" style="flex-direction: row; flex-wrap: wrap; max-width: 100%; gap: 15px;">
                     <div class="hero-feature-card">
                         <div class="hero-feature-icon hero-feature-icon--blue">
                             <i class="fas fa-code"></i>
@@ -290,6 +291,64 @@
         </div>
     </section>
 
+    <!-- Free Resources Section -->
+    <section class="section bg-light">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">🎁 FREE GOODIES</span>
+                <h2>Free Study <span class="gradient-text">Resources</span></h2>
+                <p class="section-subtitle">Download high-quality notes, cheat sheets, and roadmaps to kickstart your
+                    journey</p>
+            </div>
+            <div class="category-grid">
+                <div class="category-card category-card--simple">
+                    <div class="category-icon">
+                        <i class="fas fa-cubes"></i>
+                    </div>
+                    <h3>DSA Notes</h3>
+                    <p>Complete Data Structures & Algorithms handwritten notes.</p>
+                    <button onclick="openResourcePreview('dsa')" class="category-link"
+                        style="background:none; border:none; cursor:pointer; width:100%; display:flex; justify-content:center; margin-top:auto;">Download
+                        PDF
+                        <span>&darr;</span></button>
+                </div>
+                <div class="category-card category-card--simple">
+                    <div class="category-icon">
+                        <i class="fab fa-java"></i>
+                    </div>
+                    <h3>Java Masterclass</h3>
+                    <p>Core Java to Advanced concepts with interview questions.</p>
+                    <button onclick="openResourcePreview('java')" class="category-link"
+                        style="background:none; border:none; cursor:pointer; width:100%; display:flex; justify-content:center; margin-top:auto;">Download
+                        PDF
+                        <span>&darr;</span></button>
+                </div>
+                <div class="category-card category-card--simple">
+                    <div class="category-icon">
+                        <i class="fab fa-python"></i>
+                    </div>
+                    <h3>Python Handbook</h3>
+                    <p>Zero to Hero Python guide taking you through real projects.</p>
+                    <button onclick="openResourcePreview('python')" class="category-link"
+                        style="background:none; border:none; cursor:pointer; width:100%; display:flex; justify-content:center; margin-top:auto;">Download
+                        PDF
+                        <span>&darr;</span></button>
+                </div>
+                <div class="category-card category-card--simple">
+                    <div class="category-icon">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <h3>Web Dev Guide</h3>
+                    <p>Full Stack Roadmap with HTML, CSS, JS, and React notes.</p>
+                    <button onclick="openResourcePreview('webdev')" class="category-link"
+                        style="background:none; border:none; cursor:pointer; width:100%; display:flex; justify-content:center; margin-top:auto;">Download
+                        PDF
+                        <span>&darr;</span></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Statistics -->
     <section class="section stats">
         <div class="container">
@@ -392,6 +451,7 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="js/data.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/main.js"></script>
@@ -595,6 +655,184 @@
 
 
     </script>
+    <!-- Downloads Modal -->
+    <div id="downloads-modal" class="modal-overlay">
+        <div class="modal-content download-modal-content">
+            <button class="modal-close" onclick="closeDownloadsModal()">&times;</button>
+            <div class="download-header">
+                <h2><i class="fas fa-download"></i> My Downloads</h2>
+                <p>Access your downloaded resources and certificates anytime.</p>
+            </div>
+            <div class="downloads-list">
+                <div class="download-item">
+                    <div class="download-icon pdf"><i class="fas fa-file-pdf"></i></div>
+                    <div class="download-info">
+                        <h4>Web Development Cheatsheet</h4>
+                        <span>PDF • 2.5 MB • Downloaded 2 days ago</span>
+                    </div>
+                    <button class="btn-download-action"><i class="fas fa-download"></i></button>
+                </div>
+                <div class="download-item">
+                    <div class="download-icon zip"><i class="fas fa-file-archive"></i></div>
+                    <div class="download-info">
+                        <h4>Project Assets: E-commerce UI</h4>
+                        <span>ZIP • 45 MB • Downloaded 1 week ago</span>
+                    </div>
+                    <button class="btn-download-action"><i class="fas fa-download"></i></button>
+                </div>
+                <div class="download-item">
+                    <div class="download-icon cert"><i class="fas fa-certificate"></i></div>
+                    <div class="download-info">
+                        <h4>Certificate: Python Masterclass</h4>
+                        <span>PDF • 1.2 MB • Downloaded 2 weeks ago</span>
+                    </div>
+                    <button class="btn-download-action"><i class="fas fa-download"></i></button>
+                </div>
+            </div>
+            <div class="empty-downloads" style="display: none; text-align: center; padding: 40px;">
+                <i class="fas fa-folder-open" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 20px;"></i>
+                <p style="color: #64748b;">No downloads yet. Start learning to access resources!</p>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .download-modal-content {
+            max-width: 600px;
+            width: 90%;
+            padding: 30px;
+            border-radius: 20px;
+        }
+
+        .download-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .download-header h2 {
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .download-header h2 i {
+            color: var(--primary);
+        }
+
+        .download-header p {
+            color: #64748b;
+        }
+
+        .downloads-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .download-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+
+        .download-item:hover {
+            border-color: var(--primary-light);
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .download-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .download-icon.pdf {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .download-icon.zip {
+            background: #e0e7ff;
+            color: #6366f1;
+        }
+
+        .download-icon.cert {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .download-info {
+            flex: 1;
+        }
+
+        .download-info h4 {
+            margin: 0 0 5px 0;
+            color: var(--dark);
+            font-size: 1rem;
+        }
+
+        .download-info span {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        .btn-download-action {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: white;
+            color: var(--dark);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            margin-left: 10px;
+        }
+
+        .btn-download-action:hover {
+            background: var(--primary);
+            color: white;
+        }
+    </style>
+
+    <script>
+        function openDownloadsModal() {
+            document.getElementById('downloads-modal').classList.add('active');
+        }
+
+        function closeDownloadsModal() {
+            document.getElementById('downloads-modal').classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('downloads-modal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeDownloadsModal();
+            }
+        });
+    </script>
+
 </body>
 
 </html>

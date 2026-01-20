@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Techno Skill</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="course-premium.css">
+    <link rel="stylesheet" href="courses-enhanced.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="techno_skill_logo.png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary: #6366f1;
+            --secondary: #a855f7;
+            --dark: #0f172a;
+            --light: #f8fafc;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .about-hero {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
+            padding: 100px 0 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-hero::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+            border-radius: 50%;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 20px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .service-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+            transform-origin: left;
+        }
+
+        .service-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 20px 50px rgba(99, 102, 241, 0.15);
+        }
+
+        .service-card:hover::after {
+            transform: scaleX(1);
+        }
+
+        .service-icon {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            color: var(--primary);
+            font-size: 2.2rem;
+            transition: transform 0.4s ease;
+        }
+
+        .service-card:hover .service-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .service-card p {
+            color: #64748b;
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="techno_skill_logo.png" alt="Techno Skill Logo" class="logo-img"> Techno
+                <span>Skill</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="courses.html">Courses</a></li>
+                <li><a href="about.html" class="active">About Us</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+            </ul>
+            <div class="nav-icons">
+                <a href="wishlist.html" class="icon-link"><i class="fas fa-heart"></i></a>
+                <a href="compare.html" class="icon-link"><i class="fas fa-exchange-alt"></i></a>
+                <a href="#" class="icon-link" onclick="openDownloadsModal(); return false;"><i
+                        class="fas fa-download"></i></a>
+                <a href="dashboard.html" class="icon-link"><i class="fas fa-user"></i></a>
+            </div>
+            <button class="hamburger" id="hamburger">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- About Hero -->
+    <section class="about-hero">
+        <div class="container">
+            <h1 class="section-title">Who We Are</h1>
+            <p style="max-width: 700px; margin: 20px auto; color: #64748b; font-size: 1.1rem; line-height: 1.6;">
+                Techno Skill is a premier edu-tech platform committed to bridging the gap between learning and industry
+                demands.
+                Our mission is to empower individuals with the cutting-edge technical skills needed to thrive in the
+                digital age.
+            </p>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Our <span class="gradient-text">Services</span></h2>
+                <p>Comprehensive digital solutions for your business growth</p>
+            </div>
+
+            <div class="services-grid">
+                <!-- Service 1 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <h3>Website Development</h3>
+                    <p>
+                        Custom, responsive, and high-performance websites tailored to your brand needs. From e-commerce
+                        to portfolios, we build it all.
+                    </p>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>App Development</h3>
+                    <p>
+                        Native and cross-platform mobile applications for iOS and Android. Seamless user experience with
+                        powerful functionality.
+                    </p>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <h3>Social Media Marketing</h3>
+                    <p>
+                        Strategic social media campaigns to boost your online presence, engage your audience, and drive
+                        real business conversions.
+                    </p>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-pencil-ruler"></i>
+                    </div>
+                    <h3>UI/UX Design</h3>
+                    <p>
+                        User-centric design solutions that ensure intuitive and engaging experiences. We craft
+                        interfaces that users love.
+                    </p>
+                </div>
+
+                <!-- Service 5 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-search-dollar"></i>
+                    </div>
+                    <h3>SEO Optimization</h3>
+                    <p>
+                        Improve your search engine rankings and drive organic traffic. We implement data-driven
+                        strategies for maximum visibility.
+                    </p>
+                </div>
+
+                <!-- Service 6 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <h3>Cloud Solutions</h3>
+                    <p>
+                        Scalable and secure cloud infrastructure setup and management. Optimize your business operations
+                        with modern cloud tech.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-col">
+                <div class="logo">Techno <span>Skill</span></div>
+                <p class="footer-desc">Empowering the next generation of tech leaders with accessible, high-quality
+                    education.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <a href="index.html">Home</a>
+                <a href="courses.html">All Courses</a>
+                <a href="about.html">About Us</a>
+                <a href="contact.html">Contact Us</a>
+            </div>
+            <div class="footer-col">
+                <h3>Legal</h3>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+            </div>
+            <div class="footer-col">
+                <h3>Newsletter</h3>
+                <p style="color: #94a3b8; margin-bottom: 15px; font-size: 0.9rem;">Subscribe to get updates and free
+                    resources.</p>
+                <div style="display: flex; gap: 10px;">
+                    <input type="email" placeholder="Enter your email"
+                        style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; color: white; flex: 1;">
+                    <button
+                        style="background: #8c52ff; border: none; padding: 10px 15px; border-radius: 8px; color: white; cursor: pointer;"><i
+                            class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Techno Skill. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <!-- Downloads Modal -->
+    <div id="downloads-modal" class="modal-overlay">
+        <div class="modal-content download-modal-content">
+            <button class="modal-close" onclick="closeDownloadsModal()">&times;</button>
+            <div class="download-header">
+                <h2><i class="fas fa-download"></i> My Downloads</h2>
+                <p>Access your downloaded resources and certificates anytime.</p>
+            </div>
+            <div class="downloads-list">
+                <div class="download-item">
+                    <div class="download-icon pdf"><i class="fas fa-file-pdf"></i></div>
+                    <div class="download-info">
+                        <h4>Web Development Cheatsheet</h4>
+                        <span>PDF • 2.5 MB • Downloaded 2 days ago</span>
+                    </div>
+                    <button class="btn-download-action"><i class="fas fa-download"></i></button>
+                </div>
+                <div class="download-item">
+                    <div class="download-icon zip"><i class="fas fa-file-archive"></i></div>
+                    <div class="download-info">
+                        <h4>Project Assets: E-commerce UI</h4>
+                        <span>ZIP • 45 MB • Downloaded 1 week ago</span>
+                    </div>
+                    <button class="btn-download-action"><i class="fas fa-download"></i></button>
+                </div>
+                <div class="download-item">
+                    <div class="download-icon cert"><i class="fas fa-certificate"></i></div>
+                    <div class="download-info">
+                        <h4>Certificate: Python Masterclass</h4>
+                        <span>PDF • 1.2 MB • Downloaded 2 weeks ago</span>
+                    </div>
+                    <button class="btn-download-action"><i class="fas fa-download"></i></button>
+                </div>
+            </div>
+            <div class="empty-downloads" style="display: none; text-align: center; padding: 40px;">
+                <i class="fas fa-folder-open" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 20px;"></i>
+                <p style="color: #64748b;">No downloads yet. Start learning to access resources!</p>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .download-modal-content {
+            max-width: 600px;
+            width: 90%;
+            padding: 30px;
+            border-radius: 20px;
+            background: white !important;
+            color: var(--dark) !important;
+        }
+
+        .download-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .download-header h2 {
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .download-header h2 i {
+            color: var(--primary);
+        }
+
+        .download-header p {
+            color: #64748b;
+        }
+
+        .downloads-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .download-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+
+        .download-item:hover {
+            border-color: var(--primary-light);
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .download-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .download-icon.pdf {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .download-icon.zip {
+            background: #e0e7ff;
+            color: #6366f1;
+        }
+
+        .download-icon.cert {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .download-info {
+            flex: 1;
+        }
+
+        .download-info h4 {
+            margin: 0 0 5px 0;
+            color: var(--dark);
+            font-size: 1rem;
+        }
+
+        .download-info span {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        .btn-download-action {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: white;
+            color: var(--dark);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            margin-left: 10px;
+        }
+
+        .btn-download-action:hover {
+            background: var(--primary);
+            color: white;
+        }
+    </style>
+
+    <script>
+        function openDownloadsModal() {
+            document.getElementById('downloads-modal').classList.add('active');
+        }
+
+        function closeDownloadsModal() {
+            document.getElementById('downloads-modal').classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('downloads-modal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeDownloadsModal();
+            }
+        });
+    </script>
+</body>
+
+</html>
