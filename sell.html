@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sell Course - Techno Skill</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="techno_skill_logo.png">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="techno_skill_logo.png" alt="Techno Skill Logo" class="logo-img"> Techno
+                <span>Skill</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="courses.html">Courses</a></li>
+                <li><a href="wishlist.html">Wishlist <span class="badge" id="wishlist-count"></span></a></li>
+                <li><a href="compare.html">Compare <span class="badge" id="compare-count"></span></a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="sell.html" class="active">Sell Course</a></li>
+            </ul>
+            <div class="nav-icons">
+                <a href="wishlist.html" class="icon-link"><i class="fas fa-heart"></i></a>
+                <a href="compare.html" class="icon-link"><i class="fas fa-exchange-alt"></i></a>
+                <a href="dashboard.html" class="icon-link"><i class="fas fa-user"></i></a>
+            </div>
+            <button class="hamburger" id="hamburger">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Become an Instructor</h1>
+            <p>Share your knowledge and earn money by creating courses</p>
+            <div class="instructor-stats">
+                <div class="stat-badge">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Earn up to $5,000 per course</span>
+                </div>
+                <div class="stat-badge">
+                    <i class="fas fa-users"></i>
+                    <span>Reach 50,000+ students</span>
+                </div>
+                <div class="stat-badge">
+                    <i class="fas fa-tools"></i>
+                    <span>Powerful teaching tools</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sell Course Form -->
+    <section class="section">
+        <div class="container">
+            <div class="instructor-guide">
+                <h2><i class="fas fa-lightbulb"></i> How to Create a Successful Course</h2>
+                <div class="guide-steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h4>Define Your Course</h4>
+                        <p>Choose a topic you're passionate about and define clear learning objectives.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h4>Create Content</h4>
+                        <p>Develop engaging videos, quizzes, assignments, and resources.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h4>Set Price & Launch</h4>
+                        <p>Price your course competitively and launch to our student community.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <h4>Earn & Grow</h4>
+                        <p>Earn revenue, get feedback, and grow your instructor profile.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-container">
+                <h2>Create Your Course</h2>
+                <form id="course-form" onsubmit="submitCourseForm(event)">
+                    <div class="form-section">
+                        <h3><i class="fas fa-info-circle"></i> Course Information</h3>
+                        <div class="form-group">
+                            <label for="course-title">Course Title *</label>
+                            <input type="text" id="course-title" class="form-control"
+                                placeholder="e.g., Complete Web Development Bootcamp 2023" required>
+                            <small class="form-help">Make it catchy and descriptive</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="course-subtitle">Course Subtitle</label>
+                            <input type="text" id="course-subtitle" class="form-control"
+                                placeholder="Brief description of what students will learn">
+                            <small class="form-help">A short, compelling description that appears under the
+                                title</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="course-description">Description *</label>
+                            <textarea id="course-description" class="form-control" rows="5"
+                                placeholder="Detailed description of your course..." required></textarea>
+                            <small class="form-help">Describe what students will learn and why they should take this
+                                course</small>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="course-category">Category *</label>
+                                <select id="course-category" class="form-control" required>
+                                    <option value="">Select Category</option>
+                                    <option value="web">Web Development</option>
+                                    <option value="data">Data Science</option>
+                                    <option value="mobile">Mobile Development</option>
+                                    <option value="marketing">Digital Marketing</option>
+                                    <option value="design">UI/UX Design</option>
+                                    <option value="business">Business</option>
+                                    <option value="music">Music</option>
+                                    <option value="photography">Photography</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="course-level">Level *</label>
+                                <select id="course-level" class="form-control" required>
+                                    <option value="">Select Level</option>
+                                    <option value="beginner">Beginner</option>
+                                    <option value="intermediate">Intermediate</option>
+                                    <option value="advanced">Advanced</option>
+                                    <option value="all">All Levels</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3><i class="fas fa-cogs"></i> Course Details</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="course-price">Price ($) *</label>
+                                <input type="number" id="course-price" class="form-control" min="0" step="0.01"
+                                    placeholder="49.99" required>
+                                <small class="form-help">Set a competitive price for your course</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="course-duration">Duration (hours) *</label>
+                                <input type="number" id="course-duration" class="form-control" min="1" placeholder="40"
+                                    required>
+                                <small class="form-help">Total video/content duration</small>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="course-videos">Number of Videos</label>
+                                <input type="number" id="course-videos" class="form-control" min="1" placeholder="50">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="course-quizzes">Number of Quizzes</label>
+                                <input type="number" id="course-quizzes" class="form-control" min="0" placeholder="10">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="course-image">Course Image URL *</label>
+                            <input type="url" id="course-image" class="form-control"
+                                placeholder="https://example.com/your-course-image.jpg" required>
+                            <small class="form-help">Upload a high-quality image (1200x675px recommended)</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="course-preview">Preview Video URL</label>
+                            <input type="url" id="course-preview" class="form-control"
+                                placeholder="https://youtube.com/watch?v=...">
+                            <small class="form-help">Add a preview video to attract students</small>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3><i class="fas fa-award"></i> Course Features</h3>
+                        <div class="feature-checkboxes">
+                            <div class="form-check">
+                                <input type="checkbox" id="certificate" class="form-check-input" checked>
+                                <label for="certificate" class="form-check-label">
+                                    <i class="fas fa-certificate"></i> Certificate of completion
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" id="quizzes" class="form-check-input" checked>
+                                <label for="quizzes" class="form-check-label">
+                                    <i class="fas fa-question-circle"></i> Quizzes & Assessments
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" id="assignments" class="form-check-input" checked>
+                                <label for="assignments" class="form-check-label">
+                                    <i class="fas fa-tasks"></i> Practical Assignments
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" id="resources" class="form-check-input" checked>
+                                <label for="resources" class="form-check-label">
+                                    <i class="fas fa-file-download"></i> Downloadable Resources
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" id="support" class="form-check-input">
+                                <label for="support" class="form-check-label">
+                                    <i class="fas fa-comments"></i> Q&A Support
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" id="lifetime" class="form-check-input">
+                                <label for="lifetime" class="form-check-label">
+                                    <i class="fas fa-infinity"></i> Lifetime Access
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3><i class="fas fa-user-tie"></i> Instructor Information</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="instructor-name">Full Name *</label>
+                                <input type="text" id="instructor-name" class="form-control" placeholder="Your Name"
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label for="instructor-title">Professional Title</label>
+                                <input type="text" id="instructor-title" class="form-control"
+                                    placeholder="e.g., Senior Developer, Marketing Expert">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="instructor-bio">Bio *</label>
+                            <textarea id="instructor-bio" class="form-control" rows="3"
+                                placeholder="Tell students about your experience and expertise..." required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-large">
+                            <i class="fas fa-rocket"></i> Submit Course for Review
+                        </button>
+                        <button type="button" class="btn btn-outline" onclick="previewCourse()">
+                            <i class="fas fa-eye"></i> Preview Course
+                        </button>
+                        <button type="reset" class="btn">
+                            <i class="fas fa-redo"></i> Reset Form
+                        </button>
+                    </div>
+                </form>
+
+                <div class="future-note">
+                    <i class="fas fa-info-circle"></i>
+                    <h4>Future Enhancement</h4>
+                    <p>In a real application, this form would submit to a backend server with validation, image uploads,
+                        and course management dashboard. The submitted courses would be reviewed by administrators
+                        before being published.</p>
+                    <p>For this demo, the course preview shows how it would look to students.</p>
+                </div>
+
+                <div class="preview-section" id="preview-section">
+                    <h3><i class="fas fa-desktop"></i> Course Preview</h3>
+                    <div id="course-preview">
+                        <!-- Course preview will be generated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h3>Techno Skill</h3>
+                    <p>A modern e-commerce LMS for future-ready education.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="courses.html">Courses</a></li>
+                        <li><a href="wishlist.html">Wishlist</a></li>
+                        <li><a href="dashboard.html">Dashboard</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="#">Web Development</a></li>
+                        <li><a href="#">Data Science</a></li>
+                        <li><a href="#">Mobile Development</a></li>
+                        <li><a href="#">Digital Marketing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-envelope"></i> contact@technoskill.com</p>
+                    <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Learning St, Education City</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Techno Skill. All rights reserved. | College Project Submission</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // Sell course page JavaScript
+        document.addEventListener('DOMContentLoaded', function () {
+            // Update preview when form fields change
+            const formInputs = document.querySelectorAll('#course-form input, #course-form select, #course-form textarea');
+            formInputs.forEach(input => {
+                input.addEventListener('input', updateCoursePreview);
+            });
+
+            // Initial preview update
+            updateCoursePreview();
+        });
+
+        function updateCoursePreview() {
+            const previewContainer = document.getElementById('course-preview');
+            const title = document.getElementById('course-title').value || 'Your Course Title';
+            const subtitle = document.getElementById('course-subtitle').value || 'Brief description of what students will learn';
+            const description = document.getElementById('course-description').value || 'Detailed course description will appear here. Explain what students will learn, the skills they will acquire, and why this course is valuable.';
+            const price = document.getElementById('course-price').value || '0';
+            const duration = document.getElementById('course-duration').value || '0';
+            const level = document.getElementById('course-level').value || 'beginner';
+            const category = document.getElementById('course-category').value || 'web';
+            const imageUrl = document.getElementById('course-image').value || '';
+            const instructor = document.getElementById('instructor-name').value || 'Your Name';
+            const videos = document.getElementById('course-videos').value || '0';
+            const quizzes = document.getElementById('course-quizzes').value || '0';
+
+            previewContainer.innerHTML = `
+                <div class="course-card preview-card">
+                    <div class="course-img">
+                        ${imageUrl ? `<img src="${imageUrl}" alt="${title}" loading="lazy" data-fallback="course">` : `
+                            <div class="image-placeholder">
+                                <i class="fas fa-book"></i>
+                                <p>${category.toUpperCase()} PREVIEW</p>
+                            </div>
+                        `}
+                    </div>
+                    <div class="course-content">
+                        <h3 class="course-title">${title}</h3>
+                        <p class="course-subtitle">${subtitle}</p>
+                        <div class="course-meta">
+                            <span class="course-price">₹${parseFloat(price).toLocaleString('en-IN')}</span>
+                            <span class="course-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                                5.0 (New)
+                            </span>
+                        </div>
+                        <div class="course-preview-details">
+                            <p><strong>Description:</strong> ${description.substring(0, 150)}${description.length > 150 ? '...' : ''}</p>
+                            <div class="details-grid">
+                                <div class="detail-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>${duration} hours</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-play-circle"></i>
+                                    <span>${videos} videos</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span>${quizzes} quizzes</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-signal"></i>
+                                    <span>${level.charAt(0).toUpperCase() + level.slice(1)} Level</span>
+                                </div>
+                            </div>
+                            <div class="instructor-preview">
+                                <div class="instructor-avatar">
+                                    <i class="fas fa-user-tie"></i>
+                                </div>
+                                <div class="instructor-info">
+                                    <h4>${instructor}</h4>
+                                    <p>Course Instructor</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function previewCourse() {
+            const title = document.getElementById('course-title').value;
+            if (!title) {
+                alert('Please enter a course title first');
+                return;
+            }
+            document.getElementById('preview-section').scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+
+        function submitCourseForm(event) {
+            event.preventDefault();
+
+            // Get form values
+            const title = document.getElementById('course-title').value;
+            const subtitle = document.getElementById('course-subtitle').value;
+            const description = document.getElementById('course-description').value;
+            const price = parseInt(document.getElementById('course-price').value);
+            const duration = document.getElementById('course-duration').value;
+            const level = document.getElementById('course-level').value;
+            const category = document.getElementById('course-category').value;
+            const image = document.getElementById('course-image').value;
+            const instructor = document.getElementById('instructor-name').value;
+            const instructorBio = document.getElementById('instructor-bio').value;
+            const lectures = parseInt(document.getElementById('course-videos').value) || 0;
+
+            // Validate form
+            if (!title || !description || !price || !duration || !level || !category || !instructor || !instructorBio || !image) {
+                if (typeof showNotification === 'function') {
+                    showNotification('Please fill in all required fields marked with *', 'error');
+                } else {
+                    alert('Please fill in all required fields');
+                }
+                return;
+            }
+
+            // Create course object for saveCustomCourse
+            const courseData = {
+                title: title,
+                subtitle: subtitle,
+                description: description,
+                price: price,
+                duration: duration + ' hours',
+                level: level.charAt(0).toUpperCase() + level.slice(1),
+                category: category,
+                image: image,
+                instructor: instructor,
+                instructorBio: instructorBio,
+                lectures: lectures,
+                certificate: document.getElementById('certificate').checked,
+                icon: 'fa-graduation-cap' // Default icon
+            };
+
+            // Save to LocalStorage using existing function in data.js
+            if (typeof saveCustomCourse === 'function') {
+                const savedCourse = saveCustomCourse(courseData);
+
+                if (typeof showNotification === 'function') {
+                    showNotification(`Course "${title}" launched successfully!`, 'success');
+                } else {
+                    alert(`🎉 Course "${title}" is now LIVE!`);
+                }
+
+                // Small delay then redirect to courses page to see the new course
+                setTimeout(() => {
+                    window.location.href = 'courses.html';
+                }, 1500);
+            } else {
+                alert('Success! Your course is now live. (Data system linkage check: saveCustomCourse not found, but course is valid)');
+            }
+        }
+    </script>
+</body>
+
+</html>

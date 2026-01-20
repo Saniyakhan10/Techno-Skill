@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Courses - Techno Skill</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="course-premium.css">
+    <link rel="stylesheet" href="courses-enhanced.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="techno_skill_logo.png">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="techno_skill_logo.png" alt="Techno Skill Logo" class="logo-img"> Techno
+                <span>Skill</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="courses.html" class="active">Courses</a></li>
+                <li><a href="wishlist.html">Wishlist <span class="badge" id="wishlist-count"></span></a></li>
+                <li><a href="compare.html">Compare <span class="badge" id="compare-count"></span></a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="sell.html">Sell Course</a></li>
+            </ul>
+            <div class="nav-icons">
+                <a href="wishlist.html" class="icon-link"><i class="fas fa-heart"></i></a>
+                <a href="compare.html" class="icon-link"><i class="fas fa-exchange-alt"></i></a>
+                <a href="dashboard.html" class="icon-link"><i class="fas fa-user"></i></a>
+            </div>
+            <button class="hamburger" id="hamburger">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header premium-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="header-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h1>Discover Premium Courses</h1>
+                <p>Transform your career with our expertly crafted courses. Learn from industry professionals and master
+                    in-demand skills.</p>
+            </div>
+            <div class="filter-controls">
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="Search courses...">
+                    <button class="search-btn" id="search-btn" type="button" aria-label="Search courses">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <div class="filter-options">
+                    <select id="category-filter" class="filter-select">
+                        <option value="all">All Categories</option>
+                        <option value="web">Web Development</option>
+                        <option value="data">Data Science</option>
+                        <option value="mobile">Mobile Development</option>
+                        <option value="marketing">Digital Marketing</option>
+                        <option value="design">UI/UX Design</option>
+                    </select>
+                    <select id="level-filter" class="filter-select">
+                        <option value="all">All Levels</option>
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                    <select id="sort-filter" class="filter-select">
+                        <option value="popular">Most Popular</option>
+                        <option value="newest">Newest First</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="rating">Highest Rated</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Grid -->
+    <section class="section courses-section">
+        <div class="container">
+            <div class="courses-header">
+                <h2 id="courses-count" class="animated-title">Loading courses...</h2>
+                <p class="courses-subtitle gradient-text">Discover premium courses designed to advance your career</p>
+            </div>
+            <div class="courses-grid" id="all-courses">
+                <!-- Loading skeleton (replaced by JS) -->
+                <div class="course-card-premium skeleton-card" aria-hidden="true">
+                    <div class="course-card-header skeleton-shimmer">
+                        <div class="skeleton-image"></div>
+                    </div>
+                    <div class="course-card-body">
+                        <div class="skeleton-line" style="width: 60%; height: 20px; margin-bottom: 12px;"></div>
+                        <div class="skeleton-line" style="width: 100%; height: 16px; margin-bottom: 8px;"></div>
+                        <div class="skeleton-line" style="width: 90%; height: 16px; margin-bottom: 8px;"></div>
+                        <div class="skeleton-line" style="width: 80%; height: 16px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="no-courses-message" class="empty-state" style="display: none;">
+                <i class="fas fa-search"></i>
+                <h3>No courses found</h3>
+                <p>Try adjusting your search or filters</p>
+                <a href="courses.html" class="btn btn-primary" style="margin-top: 20px;">
+                    <i class="fas fa-redo"></i> Reset Filters
+                </a>
+            </div>
+            <noscript>
+                <div class="empty-state" style="margin-top: 20px;">
+                    <i class="fas fa-triangle-exclamation"></i>
+                    <h3>JavaScript is required</h3>
+                    <p>This page loads the courses catalog dynamically. Please enable JavaScript to view all courses.
+                    </p>
+                </div>
+            </noscript>
+        </div>
+    </section>
+
+    <!-- Course Preview Modal -->
+    <div id="course-preview-modal" class="modal-overlay">
+        <div class="modal-content premium-modal">
+            <button class="modal-close" id="close-preview-modal">&times;</button>
+            <div id="preview-content">
+                <!-- Content will be loaded by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Mentor Profile Modal -->
+    <div id="mentor-profile-modal" class="modal-overlay">
+        <div class="modal-content mentor-modal">
+            <button class="modal-close" id="close-mentor-modal">&times;</button>
+            <div id="mentor-content">
+                <!-- Mentor profile will be loaded by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h3>Techno Skill</h3>
+                    <p>A modern e-commerce LMS for future-ready education.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="courses.html">Courses</a></li>
+                        <li><a href="wishlist.html">Wishlist</a></li>
+                        <li><a href="dashboard.html">Dashboard</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="#">Web Development</a></li>
+                        <li><a href="#">Data Science</a></li>
+                        <li><a href="#">Mobile Development</a></li>
+                        <li><a href="#">Digital Marketing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-envelope"></i> contact@technoskill.com</p>
+                    <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Learning St, Education City</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Techno Skill. All rights reserved. | College Project Submission</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // Courses page specific JavaScript
+        document.addEventListener('DOMContentLoaded', function () {
+            loadAllCourses();
+            setupFilters();
+        });
+
+        function loadAllCourses() {
+            const container = document.getElementById('all-courses');
+            const allCourses = getAllCourses();
+            updateCoursesCount(allCourses.length);
+
+            if (allCourses.length > 0) {
+                container.innerHTML = allCourses.map(course => createCourseCard(course)).join('');
+                document.getElementById('no-courses-message').style.display = 'none';
+
+                // Apply image fallbacks
+                setTimeout(() => {
+                    applyImageFallbacks();
+                }, 100);
+
+                // Add smooth entrance animation
+                setTimeout(() => {
+                    const cards = container.querySelectorAll('.course-card-premium');
+                    cards.forEach((card, index) => {
+                        setTimeout(() => {
+                            card.style.opacity = '1';
+                            card.style.transform = 'translateY(0)';
+                        }, index * 50); // Stagger the animation
+                    });
+                }, 50);
+
+                // Bind preview clicks
+                bindCoursePreviewClicks();
+            } else {
+                container.innerHTML = '';
+                document.getElementById('no-courses-message').style.display = 'block';
+            }
+        }
+
+        function updateCoursesCount(count) {
+            const countElement = document.getElementById('courses-count');
+            countElement.textContent = `${count} Courses Available`;
+        }
+
+        function setupFilters() {
+            const searchInput = document.getElementById('search-input');
+            const searchBtn = document.getElementById('search-btn');
+            const categoryFilter = document.getElementById('category-filter');
+            const levelFilter = document.getElementById('level-filter');
+            const sortFilter = document.getElementById('sort-filter');
+
+            // Add event listeners
+            searchInput.addEventListener('input', filterCourses);
+            if (searchBtn) searchBtn.addEventListener('click', filterCourses);
+            categoryFilter.addEventListener('change', filterCourses);
+            levelFilter.addEventListener('change', filterCourses);
+            sortFilter.addEventListener('change', filterCourses);
+        }
+
+        function filterCourses() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const category = document.getElementById('category-filter').value;
+            const level = document.getElementById('level-filter').value;
+            const sortBy = document.getElementById('sort-filter').value;
+
+            let filteredCourses = getAllCourses();
+
+            // Apply search filter
+            if (searchTerm) {
+                filteredCourses = filteredCourses.filter(course =>
+                    course.title.toLowerCase().includes(searchTerm) ||
+                    course.description.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            // Apply category filter
+            if (category !== 'all') {
+                filteredCourses = filteredCourses.filter(course =>
+                    course.category.toLowerCase() === category.toLowerCase()
+                );
+            }
+
+            // Apply level filter
+            if (level !== 'all') {
+                filteredCourses = filteredCourses.filter(course =>
+                    course.level.toLowerCase() === level.toLowerCase()
+                );
+            }
+
+            // Apply sorting
+            switch (sortBy) {
+                case 'newest':
+                    filteredCourses.sort((a, b) => b.id - a.id); // Assuming higher ID = newer
+                    break;
+                case 'price-low':
+                    filteredCourses.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    filteredCourses.sort((a, b) => b.price - a.price);
+                    break;
+                case 'rating':
+                    filteredCourses.sort((a, b) => b.rating - a.rating);
+                    break;
+                case 'popular':
+                default:
+                    filteredCourses.sort((a, b) => b.students - a.students);
+            }
+
+            // Update display
+            const container = document.getElementById('all-courses');
+            updateCoursesCount(filteredCourses.length);
+
+            if (filteredCourses.length > 0) {
+                container.innerHTML = filteredCourses.map(course => createCourseCard(course)).join('');
+                document.getElementById('no-courses-message').style.display = 'none';
+
+                // Ensure images load properly with fallbacks
+                setTimeout(() => {
+                    applyImageFallbacks();
+                }, 100);
+
+                // Add smooth entrance animation
+                setTimeout(() => {
+                    const cards = container.querySelectorAll('.course-card-premium');
+                    cards.forEach((card, index) => {
+                        setTimeout(() => {
+                            card.style.opacity = '1';
+                            card.style.transform = 'translateY(0)';
+                        }, index * 50);
+                    });
+                }, 50);
+
+                // Re-bind preview clicks
+                bindCoursePreviewClicks();
+
+            } else {
+                container.innerHTML = '';
+                document.getElementById('no-courses-message').style.display = 'block';
+            }
+        }
+
+        function bindCoursePreviewClicks() {
+            const cards = document.querySelectorAll('.course-card-premium');
+            cards.forEach(card => {
+                card.style.cursor = 'pointer';
+                card.addEventListener('click', function (e) {
+                    // Don't trigger if a button inside the card was clicked
+                    if (e.target.closest('button') || e.target.closest('.action-buttons')) {
+                        return;
+                    }
+
+                    const courseId = parseInt(this.dataset.id);
+                    showCoursePreview(courseId);
+                });
+            });
+        }
+
+        function showCoursePreview(courseId) {
+            const course = getCourseById(courseId);
+            if (!course) return;
+
+            const modal = document.getElementById('course-preview-modal');
+            const content = document.getElementById('preview-content');
+
+            // Default subjects if none provided
+            const subjects = course.subjects || [
+                { name: "Introduction to " + course.category, ytLink: "https://www.youtube.com/results?search_query=" + encodeURIComponent(course.category + " tutorial") },
+                { name: "Basics & Fundamentals", ytLink: "https://www.youtube.com/results?search_query=" + encodeURIComponent(course.title + " basics") },
+                { name: "Advanced Concepts", ytLink: "https://www.youtube.com/results?search_query=" + encodeURIComponent(course.title + " advanced") }
+            ];
+
+            content.innerHTML = `
+                <div class="preview-header">
+                    <img src="${course.image}" alt="${course.title}" class="preview-img" data-fallback="course">
+                    <div class="preview-header-info">
+                        <h2>${course.title}</h2>
+                        <div class="preview-meta">
+                            <span><i class="fas fa-signal"></i> ${course.level}</span>
+                            <span><i class="fas fa-clock"></i> ${course.duration}</span>
+                            <span><i class="fas fa-star"></i> ${course.rating.toFixed(1)}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="preview-body">
+                    <h3>Description</h3>
+                    <p>${course.description}</p>
+                    
+                    <div class="subjects-section">
+                        <h3>Available Subjects & Videos</h3>
+                        <div class="subject-list">
+                            ${subjects.map(sub => `
+                                <a href="${sub.ytLink}" target="_blank" class="subject-item">
+                                    <div class="subject-info">
+                                        <i class="fab fa-youtube"></i>
+                                        <span>${sub.name}</span>
+                                    </div>
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="preview-footer">
+                        <div class="preview-price">₹${course.price.toLocaleString('en-IN')}</div>
+                        <button class="btn btn-primary" onclick="buyCourse(${course.id})">Enroll Now</button>
+                    </div>
+                </div>
+            `;
+
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        // Close modal logic
+        document.getElementById('close-preview-modal').addEventListener('click', function () {
+            document.getElementById('course-preview-modal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+
+        window.addEventListener('click', function (e) {
+            const modal = document.getElementById('course-preview-modal');
+            const mentorModal = document.getElementById('mentor-profile-modal');
+            if (e.target === modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+            if (e.target === mentorModal) {
+                mentorModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        function showMentorProfile(mentorName) {
+            const mentor = getMentorByName(mentorName);
+            if (!mentor) return;
+
+            const modal = document.getElementById('mentor-profile-modal');
+            const content = document.getElementById('mentor-content');
+
+            content.innerHTML = `
+                <div class="mentor-header">
+                    <div class="mentor-img-wrapper">
+                        <img src="${mentor.image}" alt="${mentor.name}" class="mentor-profile-img" data-fallback="mentor">
+                    </div>
+                    <div class="mentor-header-info">
+                        <h2>${mentor.name}</h2>
+                        <span class="mentor-role">${mentor.role}</span>
+                        <div class="mentor-experience">
+                            <i class="fas fa-award"></i>
+                            <span>${mentor.experience} Experience</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mentor-body">
+                    <h3>About the Mentor</h3>
+                    <p>${mentor.bio}</p>
+                    
+                    <div class="mentor-skills-section">
+                        <h4>Specializations</h4>
+                        <div class="skills-list">
+                            ${mentor.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+                <div class="mentor-footer">
+                    <button class="btn btn-primary" onclick="document.getElementById('mentor-profile-modal').style.display='none'; document.body.style.overflow='auto';">Close Profile</button>
+                    <div class="mentor-social">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            `;
+
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        document.getElementById('close-mentor-modal').addEventListener('click', function () {
+            document.getElementById('mentor-profile-modal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+
+    </script>
+</body>
+
+</html>

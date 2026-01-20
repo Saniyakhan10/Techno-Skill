@@ -1,0 +1,352 @@
+// Main JavaScript file - Common functionality across all pages
+
+// DOM ready function
+document.addEventListener('DOMContentLoaded', function () {
+    // Initialize mobile menu
+    initMobileMenu();
+
+    // Update navigation counts
+    updateWishlistCount();
+    updateCompareCount();
+
+    // Set current page active link
+    setActiveNavLink();
+
+    // Add notification styles if not present
+    addNotificationStyles();
+
+    // Apply generic image fallbacks (prevents broken image icons)
+    applyImageFallbacks();
+});
+
+function getFallbackImageDataUrl(type = 'generic') {
+    let label = 'IMAGE';
+    if (type === 'course') label = 'COURSE';
+    if (type === 'mentor') label = 'MENTOR';
+    const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+            <defs>
+                <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#f5f7ff"/>
+                    <stop offset="1" stop-color="#e9eaff"/>
+                </linearGradient>
+            </defs>
+            <rect width="1200" height="675" fill="url(#g)"/>
+            <rect x="60" y="60" width="1080" height="555" rx="28" fill="white" opacity="0.85"/>
+            <g fill="#8c52ff" opacity="0.9">
+                <path d="M600 230l220 85-220 85-220-85 220-85zm-170 120v110c0 60 340 60 340 0V350l-170 65-170-65z"/>
+            </g>
+            <text x="600" y="520" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="46" fill="#6a3fd8" font-weight="700">${label}</text>
+        </svg>
+    `.trim();
+
+    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
+
+function applyImageFallbacks() {
+    const imgs = document.querySelectorAll('img');
+    imgs.forEach(img => {
+        // Skip if a handler is already attached
+        if (img.dataset.fallbackBound === '1') return;
+        img.dataset.fallbackBound = '1';
+
+        // Set up the error listener
+        const handleError = () => {
+            if (img.dataset.fallbackApplied === '1') return;
+            img.dataset.fallbackApplied = '1';
+            const type = img.dataset.fallback || 'generic';
+            img.src = getFallbackImageDataUrl(type);
+        };
+
+        img.addEventListener('error', handleError);
+
+        // Immediate check if image is already broken
+        if (img.complete && (img.naturalHeight === 0 || img.naturalWidth === 0)) {
+            handleError();
+        }
+    });
+}
+
+// Initialize mobile menu toggle
+function initMobileMenu() {
+    const hamburger = document.getElementById('hamburger');
+    if (hamburger) {
+        const navMenu = document.querySelector('.nav-menu');
+        hamburger.addEventListener('click', function () {
+            navMenu.classList.toggle('active');
+            hamburger.innerHTML = navMenu.classList.contains('active') ?
+                '<i class="fas fa-times"></i>' :
+                '<i class="fas fa-bars"></i>';
+        });
+
+        // Close menu when clicking a link
+        const navLinks = document.querySelectorAll('.nav-menu a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function () {
+                navMenu.classList.remove('active');
+                hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+            });
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function (event) {
+            if (!event.target.closest('.nav-container') && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+                hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        });
+    }
+}
+
+// Set active navigation link based on current page
+function setActiveNavLink() {
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    const navLinks = document.querySelectorAll('.nav-menu a');
+
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        const linkHref = link.getAttribute('href');
+
+        if (currentPage === linkHref ||
+            (currentPage === '' && linkHref === 'index.html') ||
+            (currentPage === 'index.html' && linkHref === 'index.html')) {
+            link.classList.add('active');
+        }
+    });
+}
+
+// Toggle wishlist status
+function toggleWishlist(courseId) {
+    if (isInWishlist(courseId)) {
+        removeFromWishlist(courseId);
+        showNotification('Course removed from wishlist', 'info');
+    } else {
+        addToWishlist(courseId);
+        showNotification('Course added to wishlist', 'success');
+    }
+
+    // Update all wishlist buttons for this course (works with both old and new card styles)
+    const wishlistButtons = document.querySelectorAll(`[onclick="toggleWishlist(${courseId})"]`);
+    wishlistButtons.forEach(btn => {
+        const isNowInWishlist = isInWishlist(courseId);
+
+        // Update button state
+        if (isNowInWishlist) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+
+        // Update icon
+        const icon = btn.querySelector('i');
+        if (icon) {
+            icon.className = isNowInWishlist ? 'fas fa-heart' : 'far fa-heart';
+        }
+
+        // Update text if button has text (old style cards)
+        const textNode = Array.from(btn.childNodes).find(node => node.nodeType === 3);
+        if (textNode) {
+            textNode.textContent = isNowInWishlist ? ' Saved' : ' Wishlist';
+        }
+    });
+
+    // If on wishlist page, reload the list
+    if (window.location.pathname.includes('wishlist.html')) {
+        loadWishlistCourses();
+    }
+}
+
+// Add to compare list
+function addToCompareList(courseId) {
+    const result = addToCompare(courseId);
+    showNotification(result.message, result.success ? 'success' : 'warning');
+
+    // If on compare page, reload the comparison
+    if (window.location.pathname.includes('compare.html')) {
+        loadComparisonTable();
+    }
+}
+
+// Remove from compare list
+function removeFromCompareList(courseId) {
+    removeFromCompare(courseId);
+    showNotification('Course removed from comparison', 'info');
+
+    // If on compare page, reload the comparison
+    if (window.location.pathname.includes('compare.html')) {
+        loadComparisonTable();
+    }
+}
+
+// Clear all comparisons
+function clearComparison() {
+    if (getCompareList().length === 0) {
+        showNotification('Comparison list is already empty', 'info');
+        return;
+    }
+
+    if (confirm('Are you sure you want to clear all comparisons?')) {
+        clearCompare();
+        showNotification('Comparison cleared', 'success');
+
+        // If on compare page, reload
+        if (window.location.pathname.includes('compare.html')) {
+            loadComparisonTable();
+        }
+    }
+}
+
+// Buy course function
+// Buy course function
+function buyCourse(courseId) {
+    // Check if user is logged in
+    const currentUser = localStorage.getItem('currentUser');
+    if (!currentUser) {
+        alert('Please login to purchase this course.');
+        // Optional: Store intention to buy
+        localStorage.setItem('redirectAfterLogin', 'checkout.html'); // Or handle this logic in login
+        localStorage.setItem('selectedCourse', courseId.toString());
+        window.location.href = 'login.html';
+        return;
+    }
+
+    // Store selected course in localStorage for checkout
+    localStorage.setItem('selectedCourse', courseId.toString());
+
+    // Redirect to checkout page
+    window.location.href = 'checkout.html';
+}
+
+// Show notification message
+function showNotification(message, type = 'info') {
+    // Remove any existing notifications
+    const existingNotifications = document.querySelectorAll('.notification');
+    existingNotifications.forEach(notification => {
+        notification.remove();
+    });
+
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <span>${message}</span>
+        <button onclick="this.parentElement.remove()">×</button>
+    `;
+
+    // Add to page
+    document.body.appendChild(notification);
+
+    // Show with animation
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 10);
+
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 300);
+        }
+    }, 3000);
+}
+
+// Add notification styles to document
+function addNotificationStyles() {
+    if (!document.querySelector('#notification-styles')) {
+        const style = document.createElement('style');
+        style.id = 'notification-styles';
+        style.textContent = `
+            .notification {
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 12px;
+                color: white;
+                z-index: 10000;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                min-width: 320px;
+                max-width: 450px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+                transform: translateX(120%);
+                opacity: 0;
+                transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                backdrop-filter: blur(10px);
+            }
+            .notification span {
+                flex: 1;
+                font-weight: 500;
+                line-height: 1.4;
+                word-break: break-word;
+                margin-right: 10px;
+            }
+            .notification.show {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            .notification-success { background: #28a745; }
+            .notification-info { background: #17a2b8; }
+            .notification-warning { background: #ffc107; color: #333; }
+            .notification-error { background: #dc3545; }
+            .notification button {
+                background: none;
+                border: none;
+                color: inherit;
+                font-size: 20px;
+                cursor: pointer;
+                margin-left: 15px;
+                opacity: 0.8;
+                transition: opacity 0.2s;
+            }
+            .notification button:hover {
+                opacity: 1;
+            }
+            @media (max-width: 768px) {
+                .notification {
+                    min-width: auto;
+                    max-width: 90%;
+                    left: 5%;
+                    right: 5%;
+                    top: 80px;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+// Format currency
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2
+    }).format(amount);
+}
+
+// Get current page name
+function getCurrentPage() {
+    return window.location.pathname.split('/').pop() || 'index.html';
+}
+
+// Calculate progress percentage
+function calculateProgress(progress) {
+    return Math.min(Math.max(progress, 0), 100);
+}
+
+// Format date
+function formatDate(dateString) {
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('en-US', options);
+}
+
+// Generate random number in range
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}

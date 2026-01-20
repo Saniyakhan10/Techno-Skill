@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard - Techno Skill</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="course-premium.css">
+    <link rel="stylesheet" href="courses-enhanced.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="techno_skill_logo.png">
+    <script src="js/auth.js"></script>
+    <script>
+        // Check auth immediately
+        const user = requireAuth();
+        // Redirect logic is in requireAuth, but if we are here, we have a user.
+    </script>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="techno_skill_logo.png" alt="Techno Skill Logo" class="logo-img"> Techno
+                <span>Skill</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="courses.html">Courses</a></li>
+                <li><a href="wishlist.html">Wishlist <span class="badge" id="wishlist-count"></span></a></li>
+                <li><a href="compare.html">Compare <span class="badge" id="compare-count"></span></a></li>
+                <li><a href="dashboard.html" class="active">Dashboard</a></li>
+                <li><a href="#" onclick="logout(); return false;" style="color: var(--primary);">Logout</a></li>
+            </ul>
+            <div class="nav-icons">
+                <a href="wishlist.html" class="icon-link"><i class="fas fa-heart"></i></a>
+                <a href="dashboard.html" class="icon-link active"><i class="fas fa-user"></i></a>
+            </div>
+            <button class="hamburger" id="hamburger">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 id="dashboard-title">My Dashboard</h1>
+            <p id="dashboard-subtitle">Track your learning progress and achievements</p>
+            <div class="user-welcome">
+                <div class="user-avatar" id="user-avatar-display">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <div class="user-info">
+                    <h3 id="welcome-msg">Welcome back!</h3>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
+                        <span id="role-badge">Account</span>
+                        <a href="#" onclick="logout()"
+                            style="font-size: 0.8rem; color: #ef4444; font-weight: 600; text-decoration: none;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STUDENT DASHBOARD -->
+    <section class="section dashboard-section-main" id="student-dashboard">
+        <div class="container">
+            <!-- Statistics -->
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <i class="fas fa-book-open"></i>
+                    <h3 id="courses-count">0</h3>
+                    <p>Courses Enrolled</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-check-circle"></i>
+                    <h3 id="completed-count">0</h3>
+                    <p>Completed</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-clock"></i>
+                    <h3 id="inprogress-count">0</h3>
+                    <p>In Progress</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-award"></i>
+                    <h3 id="certificates-count">0</h3>
+                    <p>Certificates Earned</p>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 1 this week
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-hourglass-half"></i>
+                    <h3 id="study-hours">0</h3>
+                    <p>Hours Studied</p>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 5.2h today
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-trophy"></i>
+                    <h3 id="achievements">0</h3>
+                    <p>Points Earned</p>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 250 pts
+                    </div>
+                </div>
+            </div>
+
+            <!-- Learning Progress -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2>Learning Progress</h2>
+                    <p>Track your course completion and continue learning</p>
+                </div>
+                <div class="progress-container" id="purchased-courses">
+                    <!-- Purchased courses loaded by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="dashboard-section">
+                <h3>Recent Activity</h3>
+                <div class="activity-timeline">
+                    <!-- Static activity for demo -->
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-play-circle"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4>Started new lesson</h4>
+                            <p>Web Development - Lesson 5: JavaScript Fundamentals</p>
+                            <span class="activity-time">2 hours ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommended Courses -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2>Recommended For You</h2>
+                    <p>Continue learning with these suggestions</p>
+                </div>
+                <div class="courses-grid grid-compact" id="recommended-courses">
+                    <!-- Recommended courses loaded by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Test Center Section (New) -->
+            <div class="dashboard-section" id="test-center-section">
+                <div class="section-header">
+                    <h2>Test Center</h2>
+                    <p>Challenge yourself with subject-based tests and see your results</p>
+                </div>
+                <div class="test-container" id="test-view">
+                    <!-- Test selection or active test will be here -->
+                    <div class="test-selection-grid">
+                        <div class="test-category-card" onclick="startTest('web')">
+                            <i class="fas fa-code"></i>
+                            <h3>Web Development</h3>
+                            <button class="btn btn-outline">Take Test</button>
+                        </div>
+                        <div class="test-category-card" onclick="startTest('data')">
+                            <i class="fas fa-brain"></i>
+                            <h3>Data Science</h3>
+                            <button class="btn btn-outline">Take Test</button>
+                        </div>
+                        <div class="test-category-card" onclick="startTest('marketing')">
+                            <i class="fas fa-bullhorn"></i>
+                            <h3>Digital Marketing</h3>
+                            <button class="btn btn-outline">Take Test</button>
+                        </div>
+                        <div class="test-category-card" onclick="startTest('design')">
+                            <i class="fas fa-pen-ruler"></i>
+                            <h3>UI/UX Design</h3>
+                            <button class="btn btn-outline">Take Test</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ADMIN DASHBOARD -->
+    <section class="section dashboard-section-main" id="admin-dashboard" style="display: none;">
+        <div class="container">
+            <!-- Admin Statistics -->
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <i class="fas fa-wallet" style="color: #10b981;"></i>
+                    <h3 id="admin-revenue">₹0</h3>
+                    <p>Total Revenue</p>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 12% vs last month
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-users" style="color: #3b82f6;"></i>
+                    <h3 id="admin-students">0</h3>
+                    <p>Total Students</p>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 8% vs last month
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-layer-group" style="color: #a855f7;"></i>
+                    <h3 id="admin-courses">0</h3>
+                    <p>Active Courses</p>
+                    <div class="stat-trend up">
+                        <i class="fas fa-arrow-up"></i> 3 new this week
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Management Actions -->
+            <div class="dashboard-actions">
+                <button class="btn btn-primary" onclick="showCreateCourseModal()">
+                    <i class="fas fa-plus-circle"></i> Create New Course
+                </button>
+            </div>
+
+            <!-- Recent Enrollments -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2>Recent Enrollments</h2>
+                    <p>Real-time view of student purchases</p>
+                </div>
+                <div class="table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Course</th>
+                                <th>Date</th>
+                                <th class="text-right">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="enrollment-list">
+                            <!-- Enrollements loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col" style="flex: 1.5;">
+                    <h3>Techno Skill</h3>
+                    <p>A modern e-commerce LMS for future-ready education. Master world-class tech skills with our
+                        expert-led courses.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="courses.html">Courses</a></li>
+                        <li><a href="wishlist.html">Wishlist</a></li>
+                        <li><a href="dashboard.html">Dashboard</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="courses.html?category=web">Web Development</a></li>
+                        <li><a href="courses.html?category=data">Data Science</a></li>
+                        <li><a href="courses.html?category=mobile">Mobile Dev</a></li>
+                        <li><a href="courses.html?category=marketing">Digital Marketing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact Us</h4>
+                    <p><i class="fas fa-envelope"></i> contact@technoskill.com</p>
+                    <p><i class="fas fa-phone"></i> +91 98765 43210</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Tech Park, Mumbai, India</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Techno Skill. All rights reserved. | College Project Submission</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Course Preview Modal -->
+    <div id="course-preview-modal" class="modal-overlay">
+        <div class="modal-content premium-modal">
+            <button class="modal-close" id="close-preview-modal">&times;</button>
+            <div id="preview-content">
+                <!-- Content will be loaded by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Mentor Profile Modal -->
+    <div id="mentor-profile-modal" class="modal-overlay">
+        <div class="modal-content mentor-modal">
+            <button class="modal-close" id="close-mentor-modal">&times;</button>
+            <div id="mentor-content">
+                <!-- Mentor profile will be loaded by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Course Modal -->
+    <div id="create-course-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeCreateCourseModal()">&times;</button>
+            <h2>Create New Course</h2>
+            <form onsubmit="handleCreateCourse(event)">
+                <div class="form-group">
+                    <label>Course Title</label>
+                    <input type="text" name="title" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Price (₹)</label>
+                    <input type="number" name="price" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select name="category" class="form-control" required>
+                        <option value="web">Web Development</option>
+                        <option value="data">Data Science</option>
+                        <option value="mobile">Mobile Dev</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Duration</label>
+                    <input type="text" name="duration" class="form-control" placeholder="e.g. 20 hours" required>
+                </div>
+                <div class="form-group">
+                    <label>Level</label>
+                    <select name="level" class="form-control" required>
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea name="description" class="form-control" placeholder="Short description..."
+                        required></textarea>
+                </div>
+                <div class="modal-actions" style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Create Course</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeCreateCourseModal()"
+                        style="flex: 1; background: #f1f5f9; color: #475569; border: none;">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .badge-danger {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+
+        .badge-success {
+            background: #dcfce7;
+            color: #166534;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+
+        /* Test center specific styles */
+        #test-center-section .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .test-selection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .test-category-card {
+            background: #fff;
+            padding: 40px 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #eef2ff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .test-category-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary-light);
+            box-shadow: 0 20px 40px rgba(79, 70, 229, 0.1);
+        }
+
+        .test-category-card i {
+            font-size: 3rem;
+            background: var(--primary-bg);
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: var(--primary);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .test-category-card:hover i {
+            background: var(--primary);
+            color: #fff;
+            transform: scale(1.1);
+        }
+
+        .test-category-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        .test-active-container {
+            background: #fff;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            margin: 40px auto;
+            border: 1px solid #eef2ff;
+        }
+
+        .question-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: var(--dark);
+            line-height: 1.4;
+            font-weight: 700;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-item {
+            padding: 18px 24px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            color: var(--dark-gray);
+            display: flex;
+            align-items: center;
+        }
+
+        .option-item:hover {
+            border-color: var(--primary-light);
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .option-item.selected {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.2);
+        }
+
+        .test-results {
+            text-align: center;
+            padding: 30px 10px;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 35px;
+            box-shadow: 0 15px 35px rgba(79, 70, 229, 0.3);
+        }
+
+        .score-circle .score-num {
+            font-size: 3rem;
+            font-weight: 800;
+        }
+
+        .ans-review {
+            margin-top: 40px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .review-item {
+            padding: 20px;
+            border-radius: 16px;
+            background: #f8fafc;
+            border-left: 6px solid;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        .review-item.correct {
+            border-left-color: var(--success);
+            background: #f0fdf4;
+        }
+
+        .review-item.incorrect {
+            border-left-color: var(--danger);
+            background: #fef2f2;
+        }
+
+        .correct-ans {
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        .user-ans {
+            font-weight: 700;
+        }
+
+        .user-ans.wrong {
+            color: var(--danger);
+        }
+    </style>
+
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+
+</html>
