@@ -1,0 +1,81 @@
+﻿/* ========================================
+   HERO TEXT MATCHING UPLOADED IMAGE
+   ======================================== */
+
+/* Desktop & Laptop (Large Screens) */
+@media screen and (min-width: 992px) {
+
+    /* Limit width to force specific framing if needed, 
+       but primarily ensure font sizing is correct */
+    .hero-content h1 {
+        font-size: 3.5rem !important;
+        font-weight: 800 !important;
+        line-height: 1.2 !important;
+        color: #0f172a !important;
+        /* Dark Slate Color */
+        text-align: left !important;
+        margin-bottom: 20px !important;
+        max-width: 100% !important;
+        white-space: normal !important;
+        /* Allow normal flow */
+    }
+
+    /* Force 'Tech & Innovation' to the next line */
+    .hero-content h1 span.text-primary {
+        display: block !important;
+        color: #8c52ff !important;
+        /* Bright Blue */
+        margin-top: 5px !important;
+    }
+
+    .hero-subtitle {
+        font-size: 1.05rem !important;
+        color: #64748b !important;
+        max-width: 100% !important;
+        margin-bottom: 30px !important;
+        text-align: left !important;
+        line-height: 1.6 !important;
+    }
+}
+
+/* Tablet & Mobile */
+@media screen and (max-width: 991px) {
+    .hero-content h1 {
+        font-size: 2.5rem !important;
+        text-align: center !important;
+    }
+
+    .hero-content h1 span.text-primary {
+        display: block !important;
+    }
+
+    .hero-subtitle {
+        text-align: center !important;
+        margin: 0 auto 30px !important;
+    }
+}
+
+/* Badge Styling to match image (Blue pill) */
+.hero-banner {
+    display: inline-flex !important;
+    align-items: center !important;
+    background-color: #8c52ff !important;
+    /* Solid Blue */
+    color: white !important;
+    padding: 8px 16px !important;
+    border-radius: 50px !important;
+    /* Pill shape */
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    margin-bottom: 25px !important;
+    box-shadow: 0 4px 15px rgba(140, 82, 255, 0.3) !important;
+}
+
+.hero-banner i {
+    color: white !important;
+    margin-right: 8px !important;
+}
+
+.hero-banner span {
+    color: white !important;
+}

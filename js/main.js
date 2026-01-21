@@ -70,32 +70,96 @@ function applyImageFallbacks() {
 // Initialize mobile menu toggle
 function initMobileMenu() {
     const hamburger = document.getElementById('hamburger');
-    if (hamburger) {
-        const navMenu = document.querySelector('.nav-menu');
-        hamburger.addEventListener('click', function () {
-            navMenu.classList.toggle('active');
-            hamburger.innerHTML = navMenu.classList.contains('active') ?
-                '<i class="fas fa-times"></i>' :
-                '<i class="fas fa-bars"></i>';
-        });
+    const navMenu = document.querySelector('.nav-menu');
 
-        // Close menu when clicking a link
-        const navLinks = document.querySelectorAll('.nav-menu a');
-        navLinks.forEach(link => {
-            link.addEventListener('click', function () {
-                navMenu.classList.remove('active');
-                hamburger.innerHTML = '<i class="fas fa-bars"></i>';
-            });
-        });
-
-        // Close menu when clicking outside
-        document.addEventListener('click', function (event) {
-            if (!event.target.closest('.nav-container') && navMenu.classList.contains('active')) {
-                navMenu.classList.remove('active');
-                hamburger.innerHTML = '<i class="fas fa-bars"></i>';
-            }
-        });
+    if (!hamburger || !navMenu) {
+        console.log('Hamburger or nav-menu not found');
+        return;
     }
+
+    // Toggle menu on hamburger click
+    hamburger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const isActive = navMenu.classList.contains('active');
+
+        if (isActive) {
+            closeMenu();
+        } else {
+            openMenu();
+        }
+    });
+
+    // Close menu when clicking a link
+    const navLinks = document.querySelectorAll('.nav-menu a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function (e) {
+            // Don't close if it's a dropdown or has submenu
+            if (!this.getAttribute('href') || this.getAttribute('href') === '#') {
+                return;
+            }
+            closeMenu();
+        });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function (event) {
+        const isClickInsideMenu = navMenu.contains(event.target);
+        const isClickOnHamburger = hamburger.contains(event.target);
+        const isActive = navMenu.classList.contains('active');
+
+        if (!isClickInsideMenu && !isClickOnHamburger && isActive) {
+            closeMenu();
+        }
+    });
+
+    // Close menu on ESC key
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && navMenu.classList.contains('active')) {
+            closeMenu();
+        }
+    });
+
+    function openMenu() {
+        navMenu.classList.add('active');
+        hamburger.classList.add('active');
+        hamburger.innerHTML = '<i class="fas fa-times"></i>';
+        document.body.style.overflow = 'hidden';
+
+        // Add backdrop
+        if (!document.querySelector('.nav-backdrop')) {
+            const backdrop = document.createElement('div');
+            backdrop.className = 'nav-backdrop';
+            document.body.appendChild(backdrop);
+            setTimeout(() => backdrop.classList.add('active'), 10);
+
+            backdrop.addEventListener('click', closeMenu);
+        }
+    }
+
+    function closeMenu() {
+        navMenu.classList.remove('active');
+        hamburger.classList.remove('active');
+        hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+        document.body.style.overflow = '';
+
+        // Remove backdrop
+        const backdrop = document.querySelector('.nav-backdrop');
+        if (backdrop) {
+            backdrop.classList.remove('active');
+            setTimeout(() => backdrop.remove(), 300);
+        }
+    }
+
+    // Handle window resize
+    let resizeTimer;
+    window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () {
+            if (window.innerWidth > 1024 && navMenu.classList.contains('active')) {
+                closeMenu();
+            }
+        }, 250);
+    });
 }
 
 // Set active navigation link based on current page
@@ -141,13 +205,11 @@ function toggleWishlist(courseId) {
         const icon = btn.querySelector('i');
         if (icon) {
             icon.className = isNowInWishlist ? 'fas fa-heart' : 'far fa-heart';
+            // Ensure heart is red when active
+            icon.style.color = isNowInWishlist ? '#ef4444' : '';
         }
 
-        // Update text if button has text (old style cards)
-        const textNode = Array.from(btn.childNodes).find(node => node.nodeType === 3);
-        if (textNode) {
-            textNode.textContent = isNowInWishlist ? ' Saved' : ' Wishlist';
-        }
+        // Do NOT change text content as requested
     });
 
     // If on wishlist page, reload the list
@@ -446,3 +508,31 @@ function closeResourceModal() {
     }
 }
 
+// Force Hamburger Visibility Logic
+function forceHamburgerVisibility() {
+    const hamburger = document.getElementById('hamburger');
+    if (!hamburger) return;
+
+    if (window.innerWidth <= 1024) {
+        // Force styles directly via JS to override any CSS issues
+        // UPDATED: Place inside navbar, not fixed floating
+        hamburger.style.display = 'flex';
+        hamburger.style.visibility = 'visible';
+        hamburger.style.opacity = '1';
+        hamburger.style.position = 'relative'; // In flow
+        hamburger.style.bottom = 'auto'; // Reset
+        hamburger.style.right = 'auto'; // Reset
+        hamburger.style.zIndex = '1000';
+        hamburger.style.marginLeft = 'auto'; // Push to right if needed
+        console.log('Hamburger forced visible (Navbar Mode) by JS');
+    } else {
+        hamburger.style.display = 'none';
+    }
+}
+
+// Run on load and resize
+window.addEventListener('load', forceHamburgerVisibility);
+window.addEventListener('resize', forceHamburgerVisibility);
+
+// Also run immediately just in case
+forceHamburgerVisibility();

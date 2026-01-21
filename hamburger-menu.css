@@ -1,0 +1,445 @@
+﻿/* ========================================
+   HAMBURGER MENU - COMPLETE & RESPONSIVE
+   ======================================== */
+
+/* Reset & Base Styles */
+* {
+    box-sizing: border-box;
+}
+
+.nav-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* ===== DESKTOP - 1025px+ ===== */
+@media (min-width: 1025px) {
+
+    /* Hide hamburger on desktop */
+    .hamburger {
+        display: none !important;
+    }
+
+    /* Normal horizontal menu */
+    .nav-menu {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 30px !important;
+        position: static !important;
+        width: auto !important;
+        height: auto !important;
+        background: transparent !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .nav-menu li {
+        border: none !important;
+        width: auto !important;
+    }
+
+    .nav-menu li a {
+        padding: 8px 0 !important;
+        color: var(--dark-gray) !important;
+        font-size: 1rem !important;
+        transition: color 0.3s ease !important;
+    }
+
+    .nav-menu li a:hover,
+    .nav-menu li a.active {
+        color: #8c52ff !important;
+    }
+
+    .nav-menu::before {
+        display: none !important;
+    }
+
+    .nav-backdrop {
+        display: none !important;
+    }
+}
+
+/* ===== MOBILE & TABLET - 1024px and below ===== */
+@media (max-width: 1024px) {
+
+    /* HAMBURGER BUTTON STYLES */
+    .hamburger {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        background: white;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        cursor: pointer;
+        position: relative;
+        z-index: 2000;
+        padding: 0;
+        transition: all 0.3s ease;
+    }
+
+    .hamburger:hover {
+        background: #f8fafc;
+        border-color: #8c52ff;
+    }
+
+    .hamburger i {
+        font-size: 1.5rem;
+        color: #1e293b;
+        transition: color 0.3s ease;
+    }
+
+    .hamburger.active {
+        background: #8c52ff;
+        border-color: #8c52ff;
+    }
+
+    .hamburger.active i {
+        color: white;
+    }
+
+    /* MOBILE MENU SIDEBAR */
+    .nav-menu {
+        position: fixed !important;
+        top: 0 !important;
+        left: -350px !important;
+        width: 320px !important;
+        height: 100vh !important;
+        background: white !important;
+        flex-direction: column !important;
+        padding: 0 !important;
+        box-shadow: 4px 0 30px rgba(0, 0, 0, 0.2) !important;
+        transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        z-index: 1500 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+
+    /* Menu active state - slide in */
+    .nav-menu.active {
+        left: 0 !important;
+    }
+
+    /* MENU HEADER */
+    .nav-menu::before {
+        content: '📚 Menu' !important;
+        display: block !important;
+        padding: 25px 25px 20px !important;
+        background: linear-gradient(135deg, #8c52ff 0%, #3b82f6 100%) !important;
+        color: white !important;
+        font-weight: 700 !important;
+        font-size: 1.3rem !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 10 !important;
+    }
+
+    /* MENU ITEMS */
+    .nav-menu li {
+        width: 100% !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+        margin: 0 !important;
+        opacity: 0;
+        animation: slideInMenuItem 0.3s ease forwards;
+    }
+
+    .nav-menu.active li:nth-child(1) {
+        animation-delay: 0.05s;
+    }
+
+    .nav-menu.active li:nth-child(2) {
+        animation-delay: 0.1s;
+    }
+
+    .nav-menu.active li:nth-child(3) {
+        animation-delay: 0.15s;
+    }
+
+    .nav-menu.active li:nth-child(4) {
+        animation-delay: 0.2s;
+    }
+
+    .nav-menu.active li:nth-child(5) {
+        animation-delay: 0.25s;
+    }
+
+    @keyframes slideInMenuItem {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .nav-menu li a {
+        display: block !important;
+        padding: 18px 25px !important;
+        color: #1e293b !important;
+        font-size: 1.05rem !important;
+        font-weight: 500 !important;
+        transition: all 0.2s ease !important;
+        position: relative !important;
+        text-decoration: none !important;
+    }
+
+    .nav-menu li a::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 0;
+        background: #8c52ff;
+        transition: width 0.2s ease;
+    }
+
+    .nav-menu li a:hover {
+        background: #f8fafc !important;
+        color: #8c52ff !important;
+        padding-left: 35px !important;
+    }
+
+    .nav-menu li a:hover::before {
+        width: 4px;
+    }
+
+    .nav-menu li a.active {
+        background: #f6f2ff !important;
+        color: #8c52ff !important;
+        font-weight: 600 !important;
+    }
+
+    .nav-menu li a.active::before {
+        width: 4px;
+    }
+
+    /* BACKDROP OVERLAY */
+    .nav-backdrop {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: rgba(0, 0, 0, 0) !important;
+        z-index: 1000 !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        transition: all 0.3s ease !important;
+        backdrop-filter: blur(0px) !important;
+    }
+
+    .nav-backdrop.active {
+        background: rgba(0, 0, 0, 0.6) !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        backdrop-filter: blur(2px) !important;
+    }
+
+    /* NAVIGATION ICONS - Keep visible */
+    .nav-icons {
+        display: flex !important;
+        gap: 12px !important;
+        align-items: center !important;
+    }
+
+    .icon-link {
+        width: 42px !important;
+        height: 42px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1.15rem !important;
+        color: #64748b !important;
+        background: white !important;
+        border-radius: 8px !important;
+        border: 2px solid #e2e8f0 !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .icon-link:hover {
+        background: #f8fafc !important;
+        color: #8c52ff !important;
+        border-color: #8c52ff !important;
+    }
+}
+
+/* ===== TABLET - 768px to 1024px ===== */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .nav-menu {
+        width: 340px !important;
+        left: -360px !important;
+    }
+
+    .hamburger {
+        width: 46px !important;
+        height: 46px !important;
+    }
+}
+
+/* ===== MOBILE LARGE - 600px to 767px ===== */
+@media (min-width: 600px) and (max-width: 767px) {
+    .nav-menu {
+        width: 300px !important;
+        left: -320px !important;
+    }
+
+    .hamburger {
+        width: 44px !important;
+        height: 44px !important;
+    }
+
+    .hamburger i {
+        font-size: 1.4rem !important;
+    }
+}
+
+/* ===== MOBILE - 480px to 599px ===== */
+@media (min-width: 480px) and (max-width: 599px) {
+    .nav-menu {
+        width: 280px !important;
+        left: -300px !important;
+    }
+
+    .hamburger {
+        width: 42px !important;
+        height: 42px !important;
+    }
+
+    .hamburger i {
+        font-size: 1.3rem !important;
+    }
+
+    .nav-menu li a {
+        padding: 16px 20px !important;
+        font-size: 1rem !important;
+    }
+
+    .icon-link {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 1.1rem !important;
+    }
+}
+
+/* ===== SMALL MOBILE - 375px to 479px ===== */
+@media (min-width: 375px) and (max-width: 479px) {
+    .nav-menu {
+        width: 260px !important;
+        left: -280px !important;
+    }
+
+    .hamburger {
+        width: 40px !important;
+        height: 40px !important;
+    }
+
+    .hamburger i {
+        font-size: 1.25rem !important;
+    }
+
+    .nav-menu li a {
+        padding: 15px 18px !important;
+        font-size: 0.95rem !important;
+    }
+
+    .icon-link {
+        width: 38px !important;
+        height: 38px !important;
+        font-size: 1.05rem !important;
+    }
+
+    .nav-icons {
+        gap: 8px !important;
+    }
+}
+
+/* ===== EXTRA SMALL - Below 375px ===== */
+@media (max-width: 374px) {
+    .nav-menu {
+        width: 240px !important;
+        left: -260px !important;
+    }
+
+    .hamburger {
+        width: 38px !important;
+        height: 38px !important;
+    }
+
+    .hamburger i {
+        font-size: 1.2rem !important;
+    }
+
+    .nav-menu li a {
+        padding: 14px 16px !important;
+        font-size: 0.9rem !important;
+    }
+
+    .icon-link {
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 1rem !important;
+    }
+
+    .nav-icons {
+        gap: 6px !important;
+    }
+}
+
+/* ===== PREVENT BODY SCROLL WHEN MENU OPEN ===== */
+body.menu-open {
+    overflow: hidden !important;
+}
+
+/* ===== SMOOTH SCROLLBAR FOR MENU ===== */
+.nav-menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.nav-menu::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+.nav-menu::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.nav-menu::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* ===== ACCESSIBILITY ===== */
+.hamburger:focus {
+    outline: 2px solid #8c52ff !important;
+    outline-offset: 2px !important;
+}
+
+.nav-menu li a:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+/* ===== ENSURE PROPER Z-INDEX ===== */
+.navbar {
+    z-index: 1000 !important;
+}
+
+.nav-backdrop {
+    z-index: 1000 !important;
+}
+
+.nav-menu {
+    z-index: 1500 !important;
+}
+
+.hamburger {
+    z-index: 2000 !important;
+}

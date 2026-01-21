@@ -1,0 +1,84 @@
+﻿/* ========================================
+   TECHNO SKILL BLUE THEME FIX
+   ======================================== */
+
+:root {
+    /* Override Primary Colors globally */
+    --primary: #8c52ff !important;      /* Techno Skill Blue */
+    --primary-dark: #6a3fd8 !important; /* Darker Blue for hover */
+    --primary-light: #f6f2ff !important; /* Light Blue BG */
+    --secondary: #0f172a !important;    /* Dark Slate Text */
+}
+
+/* 1. BUTTONS */
+.btn-primary, button.btn-primary {
+    background-color: #8c52ff !important;
+    border-color: #8c52ff !important;
+}
+
+.btn-primary:hover, button.btn-primary:hover {
+    background-color: #6a3fd8 !important;
+    border-color: #6a3fd8 !important;
+}
+
+/* 2. TEXT & LINKS */
+.text-primary {
+    color: #8c52ff !important;
+}
+
+a {
+    color: #8c52ff;
+}
+
+a:hover {
+    color: #6a3fd8;
+}
+
+/* 3. HAMBURGER BUTTON (Mobile) */
+#hamburger.hamburger {
+    background-color: #8c52ff !important; /* Blue */
+    border-color: #6a3fd8 !important;
+    box-shadow: 0 4px 15px rgba(140, 82, 255, 0.4) !important; /* Blue Glow */
+}
+
+#hamburger.hamburger:hover {
+    background-color: #6a3fd8 !important;
+}
+
+/* 4. MENU ITEMS HOVER */
+@media screen and (max-width: 1024px) {
+    .nav-menu li a:hover {
+        background: #f6f2ff !important; /* Light Blue */
+        color: #8c52ff !important;
+    }
+
+    .nav-menu li a:hover i {
+        color: #8c52ff !important;
+    }
+    
+    /* Active Link */
+    .nav-menu li a.active {
+        background: #f6f2ff !important;
+        color: #8c52ff !important;
+    }
+    
+    .nav-menu li a.active i {
+        color: #8c52ff !important;
+    }
+}
+
+/* 5. HERO BADGES & ICONS */
+.hero-banner {
+    background-color: #8c52ff !important;
+}
+
+.hero-feature-icon {
+    color: #8c52ff !important;
+    background: #f6f2ff !important;
+}
+
+/* 6. LOGOUT BUTTON (Keep Red) */
+.nav-menu li a[href*='login'] {
+    color: #ef4444 !important;
+    background: #fef2f2 !important;
+}

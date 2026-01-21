@@ -383,6 +383,10 @@ function processPayment() {
             successMsg.scrollIntoView({ behavior: 'smooth' });
         }
 
+        // Clear payment form
+        const paymentForm = document.getElementById('payment-form');
+        if (paymentForm) paymentForm.reset();
+
         localStorage.removeItem('selectedCourse');
         localStorage.removeItem('checkoutTotal');
         updateWishlistCount();

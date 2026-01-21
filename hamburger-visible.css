@@ -1,0 +1,204 @@
+﻿
+/* ========================================
+   FINAL HAMBURGER & NAVBAR FIX
+   ======================================== */
+
+/* 1. HIDE MOBILE ITEMS ON DESKTOP (1025px+) */
+@media (min-width: 1025px) {
+    .mobile-only {
+        display: none !important;
+    }
+    .hamburger {
+        display: none !important;
+    }
+}
+
+/* 2. MOBILE & TABLET LAYOUT (<= 1024px) */
+@media (max-width: 1024px) {
+    
+    /* Navbar Container Layout */
+    .navbar .nav-container {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        position: relative !important;
+        padding: 15px 20px !important;
+    }
+
+    /* Logo - Left */
+    .logo {
+        flex-shrink: 0 !important;
+        margin-right: auto !important; /* Pushes everything else right */
+    }
+
+    /* Nav Icons - Hidden to simplify or kept small? 
+       User asked for download/logout in hamburger, 
+       but we can keep icons for quick access too. 
+       Let's keep them but ensure alignment. */
+    .nav-icons {
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        margin-right: 15px !important;
+    }
+
+    /* Hamburger Button - In Navbar, Right Aligned */
+    .hamburger {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 44px !important;
+        height: 44px !important;
+        background: #f8fafc !important; /* Light bg */
+        border: 2px solid #e2e8f0 !important;
+        border-radius: 8px !important;
+        cursor: pointer !important;
+        position: relative !important; /* NOT FIXED/FLOATING */
+        z-index: 100 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        box-shadow: none !important;
+    }
+
+    .hamburger i {
+        font-size: 1.4rem !important;
+        color: #1e293b !important;
+    }
+
+    .hamburger:hover {
+        background: #f6f2ff !important;
+        border-color: #8c52ff !important;
+    }
+    
+    .hamburger:hover i {
+        color: #8c52ff !important;
+    }
+
+    /* Active State (Menu Open) */
+    .hamburger.active {
+        background: #8c52ff !important;
+        border-color: #8c52ff !important;
+    }
+    
+    .hamburger.active i {
+        color: white !important;
+    }
+
+
+    /* 3. SLIDE-OUT MENU STYLING */
+    .nav-menu {
+        position: fixed !important;
+        top: 0 !important;
+        left: -100% !important;
+        width: 300px !important;
+        height: 100vh !important;
+        background: white !important;
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 0 !important; /* Padding handled by internal elements */
+        box-shadow: 4px 0 25px rgba(0,0,0,0.15) !important;
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        z-index: 999 !important;
+        overflow-y: auto !important;
+    }
+
+    .nav-menu.active {
+        left: 0 !important;
+    }
+
+    /* Menu Header */
+    .nav-menu::before {
+        content: 'Menu' !important;
+        display: block !important;
+        padding: 24px 24px !important;
+        background: #8c52ff !important;
+        color: white !important;
+        font-weight: 700 !important;
+        font-size: 1.3rem !important;
+        letter-spacing: 0.5px !important;
+        flex-shrink: 0 !important;
+    }
+
+    /* Menu Items */
+    .nav-menu li {
+        width: 100% !important;
+        margin: 0 !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+    }
+
+    .nav-menu li a {
+        display: flex !important;
+        align-items: center !important;
+        width: 100% !important;
+        padding: 16px 24px !important;
+        color: #334155 !important;
+        font-size: 1.05rem !important;
+        font-weight: 500 !important;
+        text-decoration: none !important;
+        transition: all 0.2s !important;
+    }
+
+    .nav-menu li a:hover {
+        background: #f8fafc !important;
+        color: #8c52ff !important;
+        padding-left: 28px !important; /* Slide effect */
+    }
+
+    /* Highlight Mobile Only Items (Logout/Download) */
+    .mobile-only {
+        display: block !important;
+    }
+
+    .mobile-only a {
+        color: #475569 !important;
+    }
+    
+    /* Specific styling for Logout/Download indicators */
+    .mobile-only a::before {
+        content: '' !important;
+        display: inline-block !important;
+        width: 8px !important;
+        height: 8px !important;
+        border-radius: 50% !important;
+        background: #cbd5e1 !important;
+        margin-right: 12px !important;
+    }
+
+    /* Red Logout */
+    .mobile-only a[href*='login'] {
+        color: #ef4444 !important;
+        margin-top: 10px !important;
+        border-top: 1px solid #f1f5f9 !important;
+        background: #fef2f2 !important;
+    }
+    
+    .mobile-only a[href*='login']:hover {
+        background: #fee2e2 !important;
+    }
+
+    .mobile-only a[href*='login']::before {
+        background: #ef4444 !important;
+    }
+
+    /* Backdrop */
+    .nav-backdrop {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        background: rgba(0,0,0,0.6) !important;
+        backdrop-filter: blur(2px) !important;
+        z-index: 998 !important; /* Behind menu, above content */
+        opacity: 0 !important;
+        visibility: hidden !important;
+        transition: all 0.3s !important;
+    }
+
+    .nav-backdrop.active {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+}
