@@ -8,23 +8,18 @@
     /* Limit width to force specific framing if needed, 
        but primarily ensure font sizing is correct */
     .hero-content h1 {
-        font-size: 3.5rem !important;
+        font-size: 3.2rem !important;
         font-weight: 800 !important;
         line-height: 1.2 !important;
         color: #0f172a !important;
-        /* Dark Slate Color */
         text-align: left !important;
         margin-bottom: 20px !important;
-        max-width: 100% !important;
-        white-space: normal !important;
-        /* Allow normal flow */
     }
 
-    /* Force 'Tech & Innovation' to the next line */
     .hero-content h1 span.text-primary {
-        display: block !important;
+        display: inline-block !important;
+        /* Work with <br> */
         color: #8c52ff !important;
-        /* Bright Blue */
         margin-top: 5px !important;
     }
 

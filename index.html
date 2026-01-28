@@ -11,18 +11,20 @@
     <link rel="stylesheet" href="hamburger-menu.css">
     <link rel="stylesheet" href="hamburger-visible.css">
     <link rel="stylesheet" href="hamburger-fixed.css">
-    <link rel="stylesheet" href="hero-fix.css">
     <link rel="stylesheet" href="theme-fix.css">
+    <link rel="stylesheet" href="downloads_modal.css">
+    <link rel="stylesheet" href="hero-fix.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" href="techno_skill_logo.png">
 </head>
 
 <body>
+
     <!-- Navigation -->
     <nav class="navbar">
         <div class="container nav-container">
             <a href="index.html" class="logo">
-                <img src="techno_skill_logo.png" alt="Techno Skill Logo" class="logo-img"> Techno
+                <i class="fas fa-graduation-cap logo-icon"></i> Techno
                 <span>Skill</span>
             </a>
             <ul class="nav-menu">
@@ -52,6 +54,7 @@
                         class="fas fa-download"></i></a>
                 <a href="dashboard.html" class="icon-link"><i class="fas fa-user"></i></a>
             </div>
+
             <!-- Guaranteed Visible Hamburger -->
             <button class="hamburger" id="hamburger" style="
                 display: flex;
@@ -82,7 +85,8 @@
                     <i class="fas fa-check-circle"></i>
                     <span>Join 50,000+ Students Learning</span>
                 </div>
-                <h1>Master the Future of <span class="text-primary">Tech & Innovation</span></h1>
+                <h1><span style="white-space: nowrap;"></span>Master the Future of</span><br><span
+                        class="text-primary">Tech & Innovation</span></h1>
                 <p class="hero-subtitle">From Web Development to AI & Machine Learning - Learn from industry experts,
                     build real-world projects, and accelerate your career.</p>
                 <div class="hero-features" style="flex-direction: row; flex-wrap: wrap; max-width: 100%; gap: 15px;">
@@ -347,10 +351,10 @@
                     </div>
                     <h3>DSA Notes</h3>
                     <p>Complete Data Structures & Algorithms handwritten notes.</p>
-                    <button onclick="openResourcePreview('dsa')" class="category-link"
-                        style="background:none; border:none; cursor:pointer; width:100%; display:flex; justify-content:center; margin-top:auto;">Download
-                        PDF
-                        <span>&darr;</span></button>
+                    <a href="dsa.pdf" download="DSA_Notes.pdf" class="btn btn-primary btn-block"
+                        style="margin-top:auto;">
+                        <i class="fas fa-download"></i> Download PDF
+                    </a>
                 </div>
                 <div class="category-card category-card--simple">
                     <div class="category-icon">
@@ -358,10 +362,10 @@
                     </div>
                     <h3>Java Masterclass</h3>
                     <p>Core Java to Advanced concepts with interview questions.</p>
-                    <button onclick="openResourcePreview('java')" class="category-link"
-                        style="background:none; border:none; cursor:pointer; width:100%; display:flex; justify-content:center; margin-top:auto;">Download
-                        PDF
-                        <span>&darr;</span></button>
+                    <a href="java.pdf" download="Java_Masterclass.pdf" class="btn btn-primary btn-block"
+                        style="margin-top:auto;">
+                        <i class="fas fa-download"></i> Download PDF
+                    </a>
                 </div>
                 <div class="category-card category-card--simple">
                     <div class="category-icon">
@@ -369,10 +373,10 @@
                     </div>
                     <h3>Python Handbook</h3>
                     <p>Zero to Hero Python guide taking you through real projects.</p>
-                    <button onclick="openResourcePreview('python')" class="category-link"
-                        style="background:none; border:none; cursor:pointer; width:100%; display:flex; justify-content:center; margin-top:auto;">Download
-                        PDF
-                        <span>&darr;</span></button>
+                    <a href="python.pdf" download="Python_Handbook.pdf" class="btn btn-primary btn-block"
+                        style="margin-top:auto;">
+                        <i class="fas fa-download"></i> Download PDF
+                    </a>
                 </div>
                 <div class="category-card category-card--simple">
                     <div class="category-icon">
@@ -380,10 +384,10 @@
                     </div>
                     <h3>Web Dev Guide</h3>
                     <p>Full Stack Roadmap with HTML, CSS, JS, and React notes.</p>
-                    <button onclick="openResourcePreview('webdev')" class="category-link"
-                        style="background:none; border:none; cursor:pointer; width:100%; display:flex; justify-content:center; margin-top:auto;">Download
-                        PDF
-                        <span>&darr;</span></button>
+                    <a href="web.pdf" download="Web_Dev_Guide.pdf" class="btn btn-primary btn-block"
+                        style="margin-top:auto;">
+                        <i class="fas fa-download"></i> Download PDF
+                    </a>
                 </div>
             </div>
         </div>

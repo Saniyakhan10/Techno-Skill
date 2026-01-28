@@ -4,8 +4,16 @@ let currentSubtotal = 0;
 let platformFee = 150.00; // Fixed platform fee in INR
 let appliedDiscount = 0;
 let isCouponApplied = false;
+let isCartMode = false;
+let checkoutItems = [];
 
 document.addEventListener('DOMContentLoaded', function () {
+    // Check mode
+    const mode = localStorage.getItem('checkoutMode');
+    if (mode === 'cart') {
+        isCartMode = true;
+    }
+
     loadCheckoutPage();
     setupPaymentMethods();
 
@@ -18,204 +26,227 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function loadCheckoutPage() {
-    const selectedCourseId = parseInt(localStorage.getItem('selectedCourse'));
     const selectedCourse = document.getElementById('selected-course');
     const orderSummary = document.getElementById('order-summary');
     const totalAmount = document.getElementById('total-amount');
 
-    if (selectedCourse && orderSummary && totalAmount) {
+    if (!selectedCourse || !orderSummary || !totalAmount) return;
+
+    if (isCartMode) {
+        // Load from Cart
+        checkoutItems = getCartCourses();
+        if (checkoutItems.length > 0) {
+            currentSubtotal = checkoutItems.reduce((sum, item) => sum + item.price, 0);
+            renderCheckoutItems(checkoutItems);
+        } else {
+            showEmptyState('Your cart is empty');
+        }
+    } else {
+        // Load Single Course
+        const selectedCourseId = parseInt(localStorage.getItem('selectedCourse'));
         if (selectedCourseId) {
             const course = getCourseById(selectedCourseId);
-
             if (course) {
+                checkoutItems = [course];
                 currentSubtotal = course.price;
-
-                // Display selected course
-                selectedCourse.innerHTML = `
-                    <div class="checkout-course-card">
-                        <div class="course-img">
-                            <img src="${course.image}" alt="${course.title}" loading="lazy" data-fallback="course">
-                        </div>
-                        <div class="course-info">
-                            <h3>${course.title}</h3>
-                            <p>${course.description.substring(0, 150)}...</p>
-                            <div class="course-details">
-                                <div class="detail"><i class="fas fa-clock"></i> <span>${course.duration}</span></div>
-                                <div class="detail"><i class="fas fa-signal"></i> <span>${course.level} Level</span></div>
-                                <div class="detail"><i class="fas fa-certificate"></i> <span>Included</span></div>
-                                <div class="detail"><i class="fas fa-star"></i> <span>${course.rating.toFixed(1)}/5.0</span></div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                updateOrderSummary();
-
-                // Apply image fallbacks with a slight delay to ensure browser parsing
-                setTimeout(() => {
-                    if (typeof applyImageFallbacks === 'function') {
-                        applyImageFallbacks();
-                    }
-                }, 100);
-
-                // Add styles for checkout alignment & coupon
-                if (!document.querySelector('#checkout-styles-v2')) {
-                    const style = document.createElement('style');
-                    style.id = 'checkout-styles-v2';
-                    style.textContent = `
-                        .checkout-container {
-                            display: grid;
-                            grid-template-columns: 1.5fr 1fr;
-                            gap: 40px;
-                            align-items: start;
-                        }
-
-                        .checkout-course-card {
-                            background: #fff;
-                            padding: 24px;
-                            border-radius: 16px;
-                            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-                            display: flex;
-                            gap: 20px;
-                            margin-bottom: 30px;
-                            border-left: 5px solid var(--primary);
-                        }
-
-                        .checkout-course-card .course-img {
-                            width: 180px;
-                            height: 110px;
-                            border-radius: 12px;
-                            overflow: hidden;
-                            flex-shrink: 0;
-                        }
-
-                        .checkout-course-card .course-img img {
-                            width: 100%;
-                            height: 100%;
-                            object-fit: cover;
-                        }
-
-                        .checkout-course-card .course-info h3 {
-                            font-size: 1.25rem;
-                            margin-bottom: 8px;
-                        }
-
-                        .checkout-course-card .course-details {
-                            display: flex;
-                            gap: 15px;
-                            flex-wrap: wrap;
-                            margin-top: 15px;
-                        }
-
-                        .checkout-course-card .detail {
-                            display: flex;
-                            align-items: center;
-                            gap: 6px;
-                            font-size: 0.85rem;
-                            color: #64748b;
-                        }
-
-                        .payment-section {
-                            background: #fff;
-                            padding: 24px;
-                            border-radius: 16px;
-                            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-                        }
-
-                        .premium-summary {
-                            background: #fff;
-                            padding: 24px;
-                            border-radius: 16px;
-                            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-                            position: sticky;
-                            top: 100px;
-                        }
-
-                        .summary-item {
-                            display: flex;
-                            justify-content: space-between;
-                            padding: 12px 0;
-                            border-bottom: 1px solid #f1f5f9;
-                            color: #475569;
-                        }
-
-                        .summary-item.discount {
-                            color: #10b981;
-                            font-weight: 600;
-                        }
-
-                        .coupon-section {
-                            margin: 20px 0;
-                            padding: 15px;
-                            background: #f8fafc;
-                            border-radius: 12px;
-                            border: 1px dashed #cbd5e1;
-                        }
-
-                        .coupon-section label {
-                            display: block;
-                            font-size: 0.85rem;
-                            margin-bottom: 8px;
-                            font-weight: 600;
-                            color: #1e293b;
-                        }
-
-                        .coupon-input-group {
-                            display: flex;
-                            gap: 10px;
-                        }
-
-                        .coupon-input-group input {
-                            flex: 1;
-                            padding: 10px 15px;
-                            border-radius: 8px;
-                            border: 1px solid #e2e8f0;
-                            font-size: 0.9rem;
-                        }
-
-                        .coupon-input-group button {
-                            padding: 10px 20px;
-                            background: var(--primary);
-                            color: #fff;
-                            border: none;
-                            border-radius: 8px;
-                            font-weight: 600;
-                            cursor: pointer;
-                            transition: all 0.2s;
-                        }
-
-                        .coupon-input-group button:hover {
-                            opacity: 0.9;
-                        }
-
-                        #coupon-message {
-                            font-size: 0.8rem;
-                            margin-top: 5px;
-                        }
-
-                        .summary-total {
-                            display: flex;
-                            justify-content: space-between;
-                            align-items: center;
-                            padding: 20px 0;
-                            font-size: 1.4rem;
-                            font-weight: 800;
-                            color: var(--primary);
-                        }
-
-                        @media (max-width: 1024px) {
-                            .checkout-container { grid-template-columns: 1fr; }
-                            .premium-summary { position: static; }
-                        }
-                    `;
-                    document.head.appendChild(style);
-                }
+                renderCheckoutItems(checkoutItems);
             } else {
                 showEmptyState('Course not found');
             }
         } else {
             showEmptyState('No course selected');
         }
+    }
+
+    updateOrderSummary();
+    applyStyles();
+}
+
+function renderCheckoutItems(items) {
+    const container = document.getElementById('selected-course');
+
+    // If multiple items, slight layout adjustment
+    const itemsHtml = items.map(course => `
+        <div class="checkout-course-card">
+            <div class="course-img">
+                <img src="${course.image}" alt="${course.title}" loading="lazy" data-fallback="course">
+            </div>
+            <div class="course-info">
+                <h3>${course.title}</h3>
+                <p>${course.description.substring(0, 100)}...</p>
+                <div class="course-details">
+                    <div class="detail"><i class="fas fa-clock"></i> <span>${course.duration}</span></div>
+                    <div class="detail"><i class="fas fa-signal"></i> <span>${course.level}</span></div>
+                    <div class="detail" style="font-weight: 700; color: var(--primary);">₹${course.price.toLocaleString('en-IN')}</div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    container.innerHTML = itemsHtml;
+
+    // Apply image fallbacks
+    setTimeout(() => {
+        if (typeof applyImageFallbacks === 'function') {
+            applyImageFallbacks();
+        }
+    }, 100);
+}
+
+function applyStyles() {
+    if (!document.querySelector('#checkout-styles-v2')) {
+        const style = document.createElement('style');
+        style.id = 'checkout-styles-v2';
+        style.textContent = `
+            .checkout-container {
+                display: grid;
+                grid-template-columns: 1.5fr 1fr;
+                gap: 40px;
+                align-items: start;
+            }
+
+            .checkout-course-card {
+                background: #fff;
+                padding: 24px;
+                border-radius: 16px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+                display: flex;
+                gap: 20px;
+                margin-bottom: 20px;
+                border-left: 5px solid var(--primary);
+            }
+
+            .checkout-course-card .course-img {
+                width: 140px;
+                height: 90px;
+                border-radius: 12px;
+                overflow: hidden;
+                flex-shrink: 0;
+            }
+
+            .checkout-course-card .course-img img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .checkout-course-card .course-info h3 {
+                font-size: 1.1rem;
+                margin-bottom: 5px;
+            }
+
+            .checkout-course-card .course-details {
+                display: flex;
+                gap: 15px;
+                flex-wrap: wrap;
+                margin-top: 10px;
+            }
+
+            .checkout-course-card .detail {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 0.85rem;
+                color: #64748b;
+            }
+
+            .payment-section, .premium-summary {
+                background: #fff;
+                padding: 24px;
+                border-radius: 16px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            }
+            
+            .premium-summary {
+                position: sticky;
+                top: 100px;
+            }
+
+            .coupon-section {
+                margin: 20px 0;
+                padding: 15px;
+                background: #f8fafc;
+                border-radius: 12px;
+                border: 1px dashed #cbd5e1;
+            }
+
+            .coupon-section label {
+                display: block;
+                font-size: 0.85rem;
+                margin-bottom: 8px;
+                font-weight: 600;
+                color: #1e293b;
+            }
+
+            .coupon-input-group {
+                display: flex;
+                gap: 10px;
+            }
+
+            .coupon-input-group input {
+                flex: 1;
+                padding: 10px 15px;
+                border-radius: 8px;
+                border: 1px solid #e2e8f0;
+                font-size: 0.9rem;
+                outline: none;
+                transition: border-color 0.2s;
+            }
+
+            .coupon-input-group input:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(140, 82, 255, 0.1);
+            }
+
+            .coupon-input-group button {
+                padding: 10px 20px;
+                background: var(--primary);
+                color: #fff;
+                border: none;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+
+            .coupon-input-group button:hover {
+                opacity: 0.9;
+            }
+
+            #coupon-message {
+                font-size: 0.8rem;
+                margin-top: 5px;
+            }
+
+            .summary-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 12px 0;
+                border-bottom: 1px solid #f1f5f9;
+                color: #475569;
+            }
+
+            .summary-item.discount {
+                color: #10b981;
+                font-weight: 600;
+            }
+
+            .summary-total {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 20px 0;
+                font-size: 1.4rem;
+                font-weight: 800;
+                color: var(--primary);
+            }
+            
+            @media (max-width: 1024px) {
+                .checkout-container { grid-template-columns: 1fr; }
+                .premium-summary { position: static; }
+            }
+        `;
+        document.head.appendChild(style);
     }
 }
 
@@ -242,7 +273,7 @@ function updateOrderSummary() {
 
     orderSummary.innerHTML = `
         <div class="summary-item">
-            <span>Price:</span>
+            <span>Price (${checkoutItems.length} items):</span>
             <span>₹${currentSubtotal.toLocaleString('en-IN')}</span>
         </div>
         <div class="summary-item">
@@ -283,6 +314,7 @@ function applyCoupon() {
         msg.textContent = "Congrats! 20% discount applied.";
         msg.style.color = "#10b981";
 
+        // Confetti Celebration
         const duration = 5 * 1000;
         const animationEnd = Date.now() + duration;
         const defaults = { startVelocity: 45, spread: 360, ticks: 100, zIndex: 10001 };
@@ -343,9 +375,8 @@ function setupPaymentMethods() {
 }
 
 function processPayment() {
-    const selectedCourseId = parseInt(localStorage.getItem('selectedCourse'));
-    if (!selectedCourseId) {
-        showNotification('Please select a course first', 'warning');
+    if (checkoutItems.length === 0) {
+        showNotification('No items to purchase', 'warning');
         return;
     }
 
@@ -356,6 +387,11 @@ function processPayment() {
     const cvv = document.getElementById('cvv');
     const email = document.getElementById('email');
     const terms = document.getElementById('terms');
+
+    if (!cardName || !cardNumber || !expiry || !cvv || !email || !terms) {
+        alert('Form elements not found. Please refresh the page.');
+        return;
+    }
 
     if (!cardName.value.trim() || !cardNumber.value.trim() || !expiry.value.trim() || !cvv.value.trim() || !email.value.trim()) {
         showNotification('All fields are required', 'error');
@@ -368,32 +404,63 @@ function processPayment() {
     }
 
     const purchaseBtn = document.querySelector('.btn-primary.btn-block');
+    if (!purchaseBtn) {
+        alert('Purchase button not found. Please refresh the page.');
+        return;
+    }
+
     const originalText = purchaseBtn.innerHTML;
     purchaseBtn.disabled = true;
     purchaseBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
-    setTimeout(() => {
-        addPurchasedCourse(selectedCourseId);
+    // Process payment
+    setTimeout(function () {
+        // Add purchased courses
+        for (var i = 0; i < checkoutItems.length; i++) {
+            addPurchasedCourse(checkoutItems[i].id);
+        }
 
-        // Success cleanup
+        // Clear Cart if in cart mode
+        if (isCartMode) {
+            clearCart();
+            localStorage.removeItem('checkoutMode');
+        } else {
+            localStorage.removeItem('selectedCourse');
+        }
+
+        // Show success message
         const successMsg = document.getElementById('success-message');
+        const checkoutContainer = document.querySelector('.checkout-container');
+
         if (successMsg) {
             successMsg.style.display = 'block';
-            document.querySelector('.checkout-container').style.display = 'none';
+        }
+        if (checkoutContainer) {
+            checkoutContainer.style.display = 'none';
+        }
+        if (successMsg) {
             successMsg.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Clear payment form
+        // Reset form
         const paymentForm = document.getElementById('payment-form');
-        if (paymentForm) paymentForm.reset();
+        if (paymentForm) {
+            paymentForm.reset();
+        }
 
-        localStorage.removeItem('selectedCourse');
+        // Clear data
         localStorage.removeItem('checkoutTotal');
+
+        // Update counts
         updateWishlistCount();
         updateCompareCount();
+        if (typeof updateCartCount === 'function') {
+            updateCartCount();
+        }
+
         showNotification('Payment successful!', 'success');
 
         purchaseBtn.disabled = false;
         purchaseBtn.innerHTML = originalText;
-    }, 2000);
+    }, 10);
 }

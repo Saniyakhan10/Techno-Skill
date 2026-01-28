@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Update navigation counts
     updateWishlistCount();
     updateCompareCount();
+    if (typeof updateCartCount === 'function') updateCartCount();
 
     // Set current page active link
     setActiveNavLink();
@@ -278,6 +279,32 @@ function buyCourse(courseId) {
     window.location.href = 'checkout.html';
 }
 
+// Add to Cart handler
+function handleAddToCart(courseId, btn) {
+    const result = addToCart(courseId);
+
+    if (result.success) {
+        // Animate button
+        const originalContent = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i>';
+        btn.style.background = '#dcfce7';
+        btn.style.borderColor = '#dcfce7';
+        btn.style.color = '#166534';
+
+        setTimeout(() => {
+            btn.innerHTML = originalContent;
+            btn.style.background = '';
+            btn.style.borderColor = '';
+            btn.style.color = '';
+        }, 1500);
+
+        // Fly animation (optional, simplified)
+        showNotification(result.message, 'success');
+    } else {
+        showNotification(result.message, 'info');
+    }
+}
+
 // Show notification message
 function showNotification(message, type = 'info') {
     // Remove any existing notifications
@@ -527,6 +554,21 @@ function forceHamburgerVisibility() {
         console.log('Hamburger forced visible (Navbar Mode) by JS');
     } else {
         hamburger.style.display = 'none';
+    }
+}
+
+// Download Modal Logic
+function openDownloadsModal() {
+    const modal = document.getElementById('downloads-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+}
+
+function closeDownloadsModal() {
+    const modal = document.getElementById('downloads-modal');
+    if (modal) {
+        modal.style.display = 'none';
     }
 }
 

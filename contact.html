@@ -204,11 +204,12 @@
 </head>
 
 <body>
+
     <!-- Navigation -->
     <nav class="navbar">
         <div class="container nav-container">
             <a href="index.html" class="logo">
-                <img src="techno_skill_logo.png" alt="Techno Skill Logo" class="logo-img"> Techno
+                <i class="fas fa-graduation-cap logo-icon"></i> Techno
                 <span>Skill</span>
             </a>
             <ul class="nav-menu">
@@ -315,30 +316,32 @@
                     </div>
                 </div>
 
-                <!-- Contact Form -->
                 <div class="contact-form">
-                    <form onsubmit="event.preventDefault(); alert('Message sent successfully!'); this.reset();">
+                    <form id="contact-form-main">
                         <div class="form-group">
                             <label class="form-label">Full Name</label>
-                            <input type="text" class="form-control" placeholder="John Doe" required>
+                            <input type="text" name="name" class="form-control" placeholder="John Doe" required>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label">Email Address</label>
-                            <input type="email" class="form-control" placeholder="john@example.com" required>
+                            <input type="email" name="email" class="form-control" placeholder="john@example.com"
+                                required>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label">Subject</label>
-                            <input type="text" class="form-control" placeholder="Course Enquiry" required>
+                            <input type="text" name="subject" class="form-control" placeholder="Course Enquiry"
+                                required>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label">Message</label>
-                            <textarea class="form-control" placeholder="Write your message here..." required></textarea>
+                            <textarea name="message" class="form-control" placeholder="Write your message here..."
+                                required></textarea>
                         </div>
 
-                        <button type="submit" class="submit-btn">Send Message</button>
+                        <button type="submit" class="submit-btn" id="contact-submit-btn">Send Message</button>
                     </form>
                 </div>
             </div>
@@ -390,6 +393,8 @@
         </div>
     </footer>
 
+    <script src="js/data.js"></script>
+    <script src="js/contact.js"></script>
     <script src="js/main.js"></script>
     <!-- Downloads Modal -->
     <div id="downloads-modal" class="modal-overlay">

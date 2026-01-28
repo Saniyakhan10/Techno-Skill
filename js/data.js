@@ -462,12 +462,12 @@ function initializeLocalStorage() {
     }
 
     if (!localStorage.getItem('purchased')) {
-        // Add some demo purchased courses
-        const demoPurchased = [
-            { id: 1, progress: 75, started: "2023-10-01", lastAccessed: "2023-11-15" },
-            { id: 5, progress: 30, started: "2023-11-10", lastAccessed: "2023-11-20" }
-        ];
-        localStorage.setItem('purchased', JSON.stringify(demoPurchased));
+        // Start with empty purchase history for new installations
+        localStorage.setItem('purchased', JSON.stringify([]));
+    }
+
+    if (!localStorage.getItem('cart')) {
+        localStorage.setItem('cart', JSON.stringify([]));
     }
 
     if (!localStorage.getItem('nextCourseId')) {
@@ -481,6 +481,30 @@ function initializeLocalStorage() {
             { id: 'enr_2', userId: 'user_002', studentName: 'Priya Patel', courseId: 5, courseTitle: 'Digital Marketing Masterclass', date: '2023-11-10', price: 5799 }
         ];
         localStorage.setItem('allEnrollments', JSON.stringify(demoEnrollments));
+    }
+    // Contact Inquiries for Admin View
+    if (!localStorage.getItem('contactInquiries')) {
+        const demoInquiries = [
+            {
+                id: 'inq_1',
+                name: 'Rahul Kumar',
+                email: 'rahul@example.com',
+                subject: 'Course Fee Details',
+                message: 'Hi, I want to know more about the installment options for the Web Development course.',
+                date: '2024-01-25',
+                time: '11:20 AM'
+            },
+            {
+                id: 'inq_2',
+                name: 'Anjali Sharma',
+                email: 'anjali@demo.com',
+                subject: 'Certificate Validity',
+                message: 'Is the certificate provided by Techno Skill recognized internationally?',
+                date: '2024-01-27',
+                time: '02:45 PM'
+            }
+        ];
+        localStorage.setItem('contactInquiries', JSON.stringify(demoInquiries));
     }
 }
 
@@ -603,11 +627,20 @@ function clearCompare() {
 
 // ===== PURCHASED COURSES FUNCTIONS =====
 function getPurchasedCourses() {
-    return JSON.parse(localStorage.getItem('purchased')) || [];
+    let currentUser = null;
+    try {
+        currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    } catch (e) { }
+
+    // Scoping to user email so different users have different purchase histories
+    const key = currentUser ? `purchased_${currentUser.email}` : 'purchased';
+    return JSON.parse(localStorage.getItem(key)) || [];
 }
 
 function addPurchasedCourse(courseId) {
     const purchased = getPurchasedCourses();
+    let isNew = false;
+
     if (!purchased.find(item => item.id === courseId)) {
         purchased.push({
             id: courseId,
@@ -615,16 +648,21 @@ function addPurchasedCourse(courseId) {
             started: new Date().toISOString().split('T')[0],
             lastAccessed: new Date().toISOString().split('T')[0]
         });
-        localStorage.setItem('purchased', JSON.stringify(purchased));
 
-        // Record global enrollment for Admin
-        if (typeof recordGlobalEnrollment === 'function') {
-            recordGlobalEnrollment(courseId);
-        }
+        let currentUser = null;
+        try { currentUser = JSON.parse(localStorage.getItem('currentUser')); } catch (e) { }
+        const key = currentUser ? `purchased_${currentUser.email}` : 'purchased';
 
-        return true;
+        localStorage.setItem(key, JSON.stringify(purchased));
+        isNew = true;
     }
-    return false;
+
+    // Record global enrollment for Admin (ALWAYS record history on checkout)
+    if (typeof recordGlobalEnrollment === 'function') {
+        recordGlobalEnrollment(courseId);
+    }
+
+    return isNew;
 }
 
 // Record Global Enrollment (Admin visibility)
@@ -642,14 +680,19 @@ function recordGlobalEnrollment(courseId) {
 
     const allEnrollments = JSON.parse(localStorage.getItem('allEnrollments')) || [];
 
-    // Avoid duplicates for the same transaction today
-    const today = new Date().toISOString().split('T')[0];
-    const alreadyEnrolled = allEnrollments.find(e => e.courseId === courseId && e.userId === userId);
+    // For Admin History: Allow duplicates if distinct transaction (date/time differs), 
+    // but here we just want to track history.
+    // We will allow adding to history even if 'alreadyEnrolled' is true IF we want to show multiple purchases of same course? 
+    // No, usually 1 purchase per user per course. The existing check is fine.
 
-    if (alreadyEnrolled) return;
+    // BETTER ID GENERATION
+    const uniqueId = 'enr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+
+    // Get current date
+    const today = new Date().toISOString().split('T')[0];
 
     allEnrollments.push({
-        id: 'enr_' + Date.now(),
+        id: uniqueId,
         userId: userId,
         studentName: studentName,
         courseId: course.id,
@@ -659,6 +702,19 @@ function recordGlobalEnrollment(courseId) {
     });
 
     localStorage.setItem('allEnrollments', JSON.stringify(allEnrollments));
+}
+
+// Delete Enrollment (Admin)
+function deleteEnrollment(enrollmentId) {
+    let allEnrollments = getAllEnrollments();
+    const initialLength = allEnrollments.length;
+    allEnrollments = allEnrollments.filter(e => e.id !== enrollmentId);
+
+    if (allEnrollments.length !== initialLength) {
+        localStorage.setItem('allEnrollments', JSON.stringify(allEnrollments));
+        return true;
+    }
+    return false;
 }
 
 // Get All Enrollments (For Admin Dashboard)
@@ -672,7 +728,12 @@ function updateCourseProgress(courseId, progress) {
     if (index !== -1) {
         purchased[index].progress = progress;
         purchased[index].lastAccessed = new Date().toISOString().split('T')[0];
-        localStorage.setItem('purchased', JSON.stringify(purchased));
+
+        let currentUser = null;
+        try { currentUser = JSON.parse(localStorage.getItem('currentUser')); } catch (e) { }
+        const key = currentUser ? `purchased_${currentUser.email}` : 'purchased';
+
+        localStorage.setItem(key, JSON.stringify(purchased));
         return true;
     }
     return false;
@@ -683,6 +744,76 @@ function getPurchasedCoursesWithDetails() {
     return purchased.map(item => {
         const course = getCourseById(item.id);
         return { ...course, ...item };
+    });
+}
+
+// ===== CONTACT INQUIRIES FUNCTIONS =====
+function getContactInquiries() {
+    return JSON.parse(localStorage.getItem('contactInquiries')) || [];
+}
+
+function saveContactInquiry(data) {
+    const inquiries = getContactInquiries();
+    const newInquiry = {
+        id: 'inq_' + Date.now(),
+        date: new Date().toISOString().split('T')[0],
+        time: new Date().toLocaleTimeString(),
+        status: 'unread',
+        ...data
+    };
+    inquiries.unshift(newInquiry); // Newest first
+    localStorage.setItem('contactInquiries', JSON.stringify(inquiries));
+    return true;
+}
+
+function deleteInquiry(id) {
+    let inquiries = getContactInquiries();
+    inquiries = inquiries.filter(inq => inq.id !== id);
+    localStorage.setItem('contactInquiries', JSON.stringify(inquiries));
+    return true;
+}
+
+// ===== CART FUNCTIONS (NEW) =====
+function getCart() {
+    return JSON.parse(localStorage.getItem('cart')) || [];
+}
+
+function addToCart(courseId) {
+    const cart = getCart();
+    if (!cart.includes(courseId)) {
+        cart.push(courseId);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartCount();
+        return { success: true, message: "Course added to cart" };
+    }
+    return { success: false, message: "Course already in cart" };
+}
+
+function removeFromCart(courseId) {
+    let cart = getCart();
+    cart = cart.filter(id => id !== courseId);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartCount();
+}
+
+function clearCart() {
+    localStorage.setItem('cart', JSON.stringify([]));
+    updateCartCount();
+}
+
+function getCartCourses() {
+    const cartIds = getCart();
+    return getAllCourses().filter(course => cartIds.includes(course.id));
+}
+
+function updateCartCount() {
+    const countElements = document.querySelectorAll('.cart-count-display');
+    const count = getCart().length;
+    countElements.forEach(element => {
+        if (element) {
+            element.textContent = count > 0 ? count : '';
+            element.style.display = count > 0 ? 'flex' : 'none';
+        }
     });
 }
 
@@ -726,6 +857,9 @@ function generateStarRating(rating) {
 function createCourseCard(course, options = {}) {
     const { showWishlistBtn = true, showCompareBtn = true, showBuyBtn = true } = options;
     const isWishlisted = isInWishlist(course.id);
+    const purchasedList = getPurchasedCourses();
+    const purchasedInfo = purchasedList.find(item => item.id === course.id);
+    const isPurchased = !!purchasedInfo;
     const iconClass = course.icon ? `fas ${course.icon}` : 'fas fa-graduation-cap';
 
     // Create shorter description for cards (first 30 characters)
@@ -742,6 +876,7 @@ function createCourseCard(course, options = {}) {
                 
                 <!-- Badges -->
                 <div class="course-badges-premium">
+                    ${isPurchased ? '<span class="badge-purchased" style="background: #10b981; color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);"><i class="fas fa-check-circle"></i> Enrolled</span>' : ''}
                     ${course.featured ? '<span class="badge-featured"><i class="fas fa-bolt"></i> Featured</span>' : ''}
                     ${course.trending ? '<span class="badge-trending"><i class="fas fa-fire"></i> Trending</span>' : ''}
                 </div>
@@ -825,10 +960,21 @@ function createCourseCard(course, options = {}) {
                     
                     <div class="action-buttons">
                         ${showBuyBtn ? `
-                            <button class="btn-buy-now" onclick="buyCourse(${course.id})">
-                                <i class="fas fa-shopping-cart"></i>
-                                Buy Now
-                            </button>
+                            ${isPurchased ? `
+                                <button class="btn-buy-now" style="background: #10b981; border-color: #10b981;" onclick="window.location.href='dashboard.html'">
+                                    <i class="fas fa-play"></i>
+                                    Go to Course
+                                </button>
+                            ` : `
+                                <button class="btn-buy-now" onclick="buyCourse(${course.id})">
+                                    <i class="fas fa-bolt"></i>
+                                    Buy Now
+                                </button>
+                                <button class="btn-cart-add" onclick="handleAddToCart(${course.id}, this)" 
+                                        aria-label="Add to cart" style="background: transparent; color: var(--primary); border: 1px solid var(--primary); padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            `}
                         ` : ''}
                         ${showCompareBtn ? `
                             <button class="btn-compare" onclick="addToCompareList(${course.id})" 

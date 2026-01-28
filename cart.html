@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Shopping Cart - Techno Skill</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="course-premium.css">
+    <link rel="stylesheet" href="courses-enhanced.css">
+    <link rel="stylesheet" href="hamburger-menu.css">
+    <link rel="stylesheet" href="hamburger-visible.css">
+    <link rel="stylesheet" href="hamburger-fixed.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="techno_skill_logo.png">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="techno_skill_logo.png" alt="Techno Skill Logo" class="logo-img"> Techno
+                <span>Skill</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="courses.html">Courses</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="sell.html">Sell Course</a></li>
+
+                <!-- Expanded Menu Items for Mobile -->
+                <li class="mobile-only"><a href="cart.html" class="active"><i class="fas fa-shopping-cart"
+                            style="margin-right: 10px; color: #8c52ff;"></i> Cart</a></li>
+                <li class="mobile-only"><a href="wishlist.html"><i class="fas fa-heart"
+                            style="margin-right: 10px; color: #8c52ff;"></i> Wishlist</a></li>
+                <li class="mobile-only"><a href="compare.html"><i class="fas fa-exchange-alt"
+                            style="margin-right: 10px; color: #8c52ff;"></i> Compare</a></li>
+                <li class="mobile-only"><a href="dashboard.html"><i class="fas fa-columns"
+                            style="margin-right: 10px; color: #8c52ff;"></i> Dashboard</a></li>
+                <li class="mobile-only"><a href="login.html" style="color: #ef4444;"><i class="fas fa-sign-out-alt"
+                            style="margin-right: 10px;"></i> Logout</a></li>
+            </ul>
+            <div class="nav-icons">
+                <a href="cart.html" class="icon-link active" style="position: relative;">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count-display"
+                        style="position: absolute; top: -5px; right: -8px; background: #ef4444; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center;">0</span>
+                </a>
+                <a href="wishlist.html" class="icon-link"><i class="fas fa-heart"></i><span id="wishlist-count"
+                        style="font-size: 0.8rem; margin-left: 2px;"></span></a>
+                <a href="compare.html" class="icon-link"><i class="fas fa-exchange-alt"></i><span id="compare-count"
+                        style="font-size: 0.8rem; margin-left: 2px;"></span></a>
+                <a href="dashboard.html" class="icon-link"><i class="fas fa-user"></i></a>
+            </div>
+
+            <!-- Hamburger -->
+            <button class="hamburger" id="hamburger" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header premium-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="header-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <h1>Shopping Cart</h1>
+                <p>Review your selected courses and proceed to checkout.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Content -->
+    <section class="section">
+        <div class="container">
+            <div id="cart-container">
+                <!-- Cart loaded by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col" style="flex: 1.5;">
+                    <h3>Techno Skill</h3>
+                    <p>A modern e-commerce LMS for future-ready education.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="courses.html">Courses</a></li>
+                        <li><a href="wishlist.html">Wishlist</a></li>
+                        <li><a href="dashboard.html">Dashboard</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-envelope"></i> contact@technoskill.com</p>
+                    <p><i class="fas fa-phone"></i> +91 98765 43210</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Techno Skill. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/cart.js"></script>
+</body>
+
+</html>

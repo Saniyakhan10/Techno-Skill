@@ -24,11 +24,12 @@
 </head>
 
 <body>
+
     <!-- Navigation -->
     <nav class="navbar">
         <div class="container nav-container">
             <a href="index.html" class="logo">
-                <img src="techno_skill_logo.png" alt="Techno Skill Logo" class="logo-img"> Techno
+                <i class="fas fa-graduation-cap logo-icon"></i> Techno
                 <span>Skill</span>
             </a>
             <ul class="nav-menu">
@@ -318,23 +319,36 @@
                             </tr>
                         </thead>
                         <tbody id="enrollment-list">
+                            <!-- Enrollments loaded by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Contact Inquiries -->
+            <div class="dashboard-section" style="margin-top: 40px;">
+                <div class="section-header">
+                    <h2>Contact Inquiries</h2>
+                    <p>Messages from students and visitors</p>
+                </div>
+                <div class="table-container">
+                    <table class="admin-table inquiries-table">
+                        <thead>
                             <tr>
-                                <td>
-                                    <strong>Priya Patel</strong><br>
-                                    <small style="color: #94a3b8;">user_281</small>
-                                </td>
-                                <td>Digital Marketing Masterclass</td>
-                                <td>Nov 10, 2023</td>
-                                <td class="text-right"><strong>₹9,799</strong></td>
+                                <th>SENDER</th>
+                                <th>SUBJECT & MESSAGE</th>
+                                <th>DATE</th>
+                                <th class="text-right">ACTION</th>
                             </tr>
+                        </thead>
+                        <tbody id="inquiries-list">
+                            <!-- Inquiries loaded by JS -->
                             <tr>
-                                <td>
-                                    <strong>Rahul Sharma</strong><br>
-                                    <small style="color: #94a3b8;">user_001</small>
+                                <td colspan="4" style="text-align: center; padding: 40px; color: #64748b;">
+                                    <i class="fas fa-inbox"
+                                        style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                                    No inquiries yet
                                 </td>
-                                <td>Complete Web Development Bootcamp 2023</td>
-                                <td>Oct 1, 2023</td>
-                                <td class="text-right"><strong>₹7,499</strong></td>
                             </tr>
                         </tbody>
                     </table>

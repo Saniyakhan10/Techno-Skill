@@ -492,6 +492,13 @@ function viewCertificate(courseId) {
     showNotification('Certificate generated successfully!', 'success');
 }
 
+// Helper function to format date
+function formatDate(dateStr) {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
 // ADMIN DASHBOARD LOGIC
 function loadAdminDashboard() {
     const allEnrollments = getAllEnrollments();
@@ -517,13 +524,83 @@ function loadAdminDashboard() {
                     <div class="student-name-cell">${enr.studentName}</div>
                     <div class="student-id-cell">${enr.userId}</div>
                 </td>
-                <td>${enr.courseTitle}</td>
-                <td>${formatDate(enr.date)}</td>
+                <td>
+                    <div style="font-weight: 500;">${enr.courseTitle}</div>
+                    <div style="font-size: 0.8rem; color: #64748b;">ID: ${enr.id}</div>
+                </td>
+                <td style="white-space: nowrap;">
+                     <div style="font-weight: 500; color: #334155;">${formatDate(enr.date)}</div>
+                     <div style="font-size: 0.75rem; color: #94a3b8;">${enr.timestamp ? new Date(enr.timestamp).toLocaleTimeString() : ''}</div>
+                </td>
                 <td class="amount-cell">₹${(parseInt(enr.price) || 0).toLocaleString('en-IN')}</td>
+                <td style="text-align: center;">
+                    <button class="btn-icon-delete" onclick="handleDeleteEnrollment('${enr.id}')" title="Delete Entry" style="background:none; border:none; color: #ef4444; cursor:pointer; padding: 5px; font-size: 1rem;">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </td>
             </tr>
         `).join('');
     } else {
-        enrollmentList.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">No enrollments found yet.</td></tr>';
+        enrollmentList.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px;">No enrollments found yet.</td></tr>';
+    }
+
+    // Inquiries List
+    const inquiriesList = document.getElementById('inquiries-list');
+    const inquiries = getContactInquiries();
+
+    if (inquiries.length > 0) {
+        inquiriesList.innerHTML = inquiries.map(inq => `
+            <tr id="row-${inq.id}">
+                <td>
+                    <strong>${inq.name}</strong><br>
+                    <small style="color: #6366f1;">${inq.email}</small>
+                </td>
+                <td style="max-width: 400px;">
+                    <div style="font-weight: 700; color: #1e293b; margin-bottom: 5px;">${inq.subject}</div>
+                    <div style="font-size: 0.9rem; color: #475569; line-height: 1.5; background: #f1f5f9; padding: 10px; border-radius: 8px; border-left: 3px solid #8c52ff;">
+                        ${inq.message}
+                    </div>
+                </td>
+                <td>
+                    <div style="font-size: 0.9rem; font-weight: 500;">${inq.date}</div>
+                    <div style="font-size: 0.75rem; color: #94a3b8;">${inq.time}</div>
+                </td>
+                <td class="text-right">
+                    <button class="btn-icon-delete" onclick="handleDeleteInquiry('${inq.id}')" style="background:#fee2e2; border:none; color: #ef4444; cursor:pointer; padding: 8px; border-radius: 6px; font-size: 0.9rem;" title="Delete">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    } else {
+        inquiriesList.innerHTML = `
+            <tr>
+                <td colspan="4" style="text-align: center; padding: 40px; color: #64748b;">
+                    <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                    No inquiries yet
+                </td>
+            </tr>
+        `;
+    }
+}
+
+function handleDeleteInquiry(id) {
+    if (confirm('Delete this inquiry?')) {
+        if (deleteInquiry(id)) {
+            loadAdminDashboard();
+            showNotification('Inquiry deleted', 'success');
+        }
+    }
+}
+
+function handleDeleteEnrollment(enrollmentId) {
+    if (confirm('Are you sure you want to delete this enrollment record? This cannot be undone.')) {
+        if (typeof deleteEnrollment === 'function' && deleteEnrollment(enrollmentId)) {
+            showNotification('Enrollment record deleted successfully', 'success');
+            loadAdminDashboard();
+        } else {
+            showNotification('Failed to delete record', 'error');
+        }
     }
 }
 

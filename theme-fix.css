@@ -4,19 +4,25 @@
 
 :root {
     /* Override Primary Colors globally */
-    --primary: #8c52ff !important;      /* Techno Skill Blue */
-    --primary-dark: #6a3fd8 !important; /* Darker Blue for hover */
-    --primary-light: #f6f2ff !important; /* Light Blue BG */
-    --secondary: #0f172a !important;    /* Dark Slate Text */
+    --primary: #8c52ff !important;
+    /* Techno Skill Blue */
+    --primary-dark: #6a3fd8 !important;
+    /* Darker Blue for hover */
+    --primary-light: #f6f2ff !important;
+    /* Light Blue BG */
+    --secondary: #0f172a !important;
+    /* Dark Slate Text */
 }
 
 /* 1. BUTTONS */
-.btn-primary, button.btn-primary {
+.btn-primary,
+button.btn-primary {
     background-color: #8c52ff !important;
     border-color: #8c52ff !important;
 }
 
-.btn-primary:hover, button.btn-primary:hover {
+.btn-primary:hover,
+button.btn-primary:hover {
     background-color: #6a3fd8 !important;
     border-color: #6a3fd8 !important;
 }
@@ -30,15 +36,26 @@ a {
     color: #8c52ff;
 }
 
-a:hover {
+a:not(.logo):hover {
     color: #6a3fd8;
+}
+
+/* Ensure Logo stays dark and doesn't change on hover */
+.logo {
+    color: #0f172a !important;
+}
+
+.logo:hover {
+    color: #0f172a !important;
 }
 
 /* 3. HAMBURGER BUTTON (Mobile) */
 #hamburger.hamburger {
-    background-color: #8c52ff !important; /* Blue */
+    background-color: #8c52ff !important;
+    /* Blue */
     border-color: #6a3fd8 !important;
-    box-shadow: 0 4px 15px rgba(140, 82, 255, 0.4) !important; /* Blue Glow */
+    box-shadow: 0 4px 15px rgba(140, 82, 255, 0.4) !important;
+    /* Blue Glow */
 }
 
 #hamburger.hamburger:hover {
@@ -48,20 +65,21 @@ a:hover {
 /* 4. MENU ITEMS HOVER */
 @media screen and (max-width: 1024px) {
     .nav-menu li a:hover {
-        background: #f6f2ff !important; /* Light Blue */
+        background: #f6f2ff !important;
+        /* Light Blue */
         color: #8c52ff !important;
     }
 
     .nav-menu li a:hover i {
         color: #8c52ff !important;
     }
-    
+
     /* Active Link */
     .nav-menu li a.active {
         background: #f6f2ff !important;
         color: #8c52ff !important;
     }
-    
+
     .nav-menu li a.active i {
         color: #8c52ff !important;
     }
